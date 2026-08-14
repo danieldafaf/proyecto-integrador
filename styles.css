@@ -107,12 +107,6 @@ select {
     border-color: var(--accent);
 }
 
-.btn-danger {
-    color: var(--danger);
-    background: transparent;
-    border-color: #733c44;
-}
-
 .container {
     width: min(1180px, 92vw);
     margin: 28px auto 55px;
@@ -405,12 +399,6 @@ select {
     margin-top: 8px;
 }
 
-.error {
-    min-height: 22px;
-    color: var(--danger);
-    font-size: 0.85rem;
-}
-
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -444,14 +432,6 @@ select {
 .menu-card p {
     color: var(--muted);
     line-height: 1.5;
-}
-
-.notice {
-    padding: 12px 14px;
-    margin-bottom: 16px;
-    color: #dbe5ef;
-    background: rgba(244, 166, 42, 0.08);
-    border-left: 3px solid var(--accent);
 }
 
 @media (max-width: 800px) {
