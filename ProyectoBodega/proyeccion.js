@@ -3,6 +3,12 @@ let grafica;
 function calcularProyeccion() {
     requireSession();
 
+    const stockActual = document.getElementById("stockActual");
+    const salidaPromedio = document.getElementById("salidaPromedio");
+    const diasAgotamiento = document.getElementById("diasAgotamiento");
+    const valorInventario = document.getElementById("valorInventario");
+    const mensajeProyeccion = document.getElementById("mensajeProyeccion");
+
     const productos = DB.get("productos", []);
     const movimientos = DB.get("movimientos", []);
 
@@ -40,13 +46,16 @@ function calcularProyeccion() {
 
     stockActual.textContent = Math.round(stock);
     salidaPromedio.textContent = promedio.toFixed(2);
-    diasAgotamiento.textContent = promedio > 0
-        ? Math.ceil(dias)
-        : "—";
+
+    diasAgotamiento.textContent =
+        promedio > 0
+            ? Math.ceil(dias)
+            : "—";
 
     valorInventario.textContent = money(
         productos.reduce(
-            (t, p) => t + Number(p.stock || 0) * Number(p.precio || 0),
+            (t, p) =>
+                t + Number(p.stock || 0) * Number(p.precio || 0),
             0
         )
     );
@@ -75,10 +84,13 @@ function renderGrafica(stock, promedio, diasMostrar) {
 
     for (let d = 0; d <= Math.min(diasMostrar, 90); d++) {
         etiquetas.push(`Día ${d}`);
+
         datos.push(
             Math.max(
                 0,
-                Number((stock - promedio * d).toFixed(2))
+                Number(
+                    (stock - promedio * d).toFixed(2)
+                )
             )
         );
     }

@@ -1,46 +1,52 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>Proyección</title>
+    <title>Proyección - Bodega</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-
 <body>
-    <header class="header">
+
+    <header class="topbar">
         <div>
-            <span class="brand-tag">Analisis - Bodega</span>
+            <span class="brand-tag">BODEGA · ANÁLISIS</span>
             <h1 class="brand-title">Proyección de inventario</h1>
         </div>
 
         <div class="top-actions">
             <nav class="nav">
-                <a href="index.html" class="nav-link">Inicio</a>
-                <a href="inventario.html" class="nav-link">Inventario</a>
-                <a href="proyeccion.html" class="nav-link active">Proyección</a>
-                <a href="ventas.html" class="nav-link">Ventas</a>
+                <a href="menu.html">Menú</a>
+                <a href="clientes.html">Clientes</a>
+                <a href="ventas.html">Ventas</a>
+                <a href="inventario.html">Inventario</a>
+                <a href="compras.html">Compras</a>
+                <a href="movimientos.html">Movimientos</a>
+                <a href="proyeccion.html" class="active">Proyección</a>
             </nav>
 
             <button class="btn" onclick="logout()">
-                cerrar sesión
+                Cerrar sesión
             </button>
         </div>
     </header>
 
     <main class="container">
+
         <section class="hero">
             <div>
                 <h2>Proyección de agotamiento</h2>
-                <p>Esto esta basado en el stock actual y las salidas registradas</p>
+                <p>
+                    Estimación basada en el stock actual y las salidas registradas.
+                </p>
             </div>
         </section>
 
         <section class="stats">
-            <div class="card stats">
-                <small>Stock Actual</small>
+            <div class="card stat">
+                <small>Stock actual</small>
                 <strong id="stockActual">0</strong>
             </div>
 
@@ -58,7 +64,6 @@
                 <small>Valor inventario</small>
                 <strong id="valorInventario">$0.00</strong>
             </div>
-        </section>
         </section>
 
         <section class="card" style="padding:20px">
@@ -81,6 +86,6 @@
 
     <script src="app.js"></script>
     <script src="proyeccion.js"></script>
-                
+
 </body>
 </html>

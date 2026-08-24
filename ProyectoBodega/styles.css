@@ -470,4 +470,11 @@ select {
         width: 94vw;
     }
 }
+.card-proyeccion {
+    padding: 20px;
+}
 
+.card-interpretacion {
+    padding: 20px;
+    margin-top: 20px;
+}
