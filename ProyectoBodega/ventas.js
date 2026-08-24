@@ -1,207 +1,59 @@
 let sales = [];
-
 function initSales() {
     requireSession();
-
     sales = DB.get("ventas", []);
-
     saleSearch.addEventListener("input", renderSales);
     saleForm.addEventListener("submit", saveSale);
     cantidadVenta.addEventListener("input", previewTotal);
     precioVenta.addEventListener("input", previewTotal);
-
+    cargarProductosVenta();
     renderSales();
 }
-
-function previewTotal() {
-    const cantidad = Number(cantidadVenta.value);
-    const precio = Number(precioVenta.value);
-
-    totalPreview.textContent = money(cantidad * precio);
+function cargarProductosVenta() {
+    const productos = DB.get("productos", []);
+    productoVenta.innerHTML = `<option value="">Seleccione un producto</option>` + productos.map(p => `<option value="${p.id}">${esc(p.nombre)} · Stock: ${p.stock}</option>`).join("");
 }
-
-function openSale(id = "") {
-    saleForm.reset();
-    saleId.value = "";
-
-    fecha.value = new Date()
-        .toISOString()
-        .slice(0, 10);
-
-    saleTitle.textContent = "Nueva venta";
-
-    if (id) {
-        const venta = sales.find(item => item.id === id);
-
-        saleId.value = venta.id;
-        fecha.value = venta.fecha;
-        cedulaCliente.value = venta.cedula;
-        tipoVehiculo.value = venta.tipo;
-        marcaVenta.value = venta.marca;
-        cantidadVenta.value = venta.cantidad;
-        precioVenta.value = venta.precio;
-
-        saleTitle.textContent = "Editar venta";
-    }
-
+function actualizarPrecioVenta() {
+    const producto = DB.get("productos", []).find(p => p.id === productoVenta.value);
+    if (producto) precioVenta.value = Number(producto.precio).toFixed(2);
     previewTotal();
-    modal("saleModal", true);
 }
-
-function closeSale() {
-    modal("saleModal", false);
+function previewTotal() { totalPreview.textContent = money(Number(cantidadVenta.value) * Number(precioVenta.value)); }
+function openSale(id = "") {
+    saleForm.reset(); saleId.value = ""; fecha.value = new Date().toISOString().slice(0, 10); cargarProductosVenta(); saleTitle.textContent = "Nueva salida / venta";
+    if (id) {
+        const venta = sales.find(v => v.id === id); if (!venta) return;
+        saleId.value = venta.id; fecha.value = venta.fecha; cedulaCliente.value = venta.cedula || ""; productoVenta.value = venta.productoId || ""; cantidadVenta.value = venta.cantidad; precioVenta.value = venta.precio; saleTitle.textContent = "Editar salida";
+    }
+    previewTotal(); modal("saleModal", true);
 }
-
+function closeSale() { modal("saleModal", false); }
 function saveSale(evento) {
     evento.preventDefault();
-
-    if (!validCedula(cedulaCliente.value)) {
-        alert("La cédula debe contener 10 números.");
-        return;
-    }
-
-    const datosVenta = {
-        fecha: fecha.value,
-        cedula: cedulaCliente.value,
-        tipo: tipoVehiculo.value,
-        marca: marcaVenta.value.trim().toUpperCase(),
-        cantidad: Number(cantidadVenta.value),
-        precio: Number(precioVenta.value)
-    };
-
+    if (!validCedula(cedulaCliente.value)) return alert("La cédula debe contener 10 números.");
+    const productos = DB.get("productos", []); const producto = productos.find(p => p.id === productoVenta.value);
+    const cantidad = Number(cantidadVenta.value); const precio = Number(precioVenta.value);
+    if (!producto) return alert("Seleccione un producto.");
+    if (cantidad <= 0) return alert("La cantidad debe ser mayor que cero.");
     const id = saleId.value;
-
+    if (!id && cantidad > Number(producto.stock)) return alert(`Stock insuficiente. Disponible: ${producto.stock}`);
+    const datos = { fecha: fecha.value, cedula: cedulaCliente.value, productoId: producto.id, producto: producto.nombre, cantidad, precio };
     if (id) {
-        const ventaExistente = sales.find(
-            venta => venta.id === id
-        );
-
-        Object.assign(ventaExistente, datosVenta);
+        const existente = sales.find(v => v.id === id); Object.assign(existente, datos);
     } else {
-        sales.push({
-            id: uid(),
-            ...datosVenta
-        });
+        producto.stock -= cantidad; DB.set("productos", productos); sales.push({ id: uid(), ...datos }); registrarMovimiento("SALIDA", producto.nombre, cantidad, "Venta registrada");
     }
-
-    DB.set("ventas", sales);
-
-    closeSale();
-    renderSales();
+    DB.set("ventas", sales); closeSale(); renderSales();
 }
-
 function deleteSale(id) {
-    const confirmar = confirm(
-        "¿Eliminar esta venta?"
-    );
-
-    if (!confirmar) {
-        return;
-    }
-
-    sales = sales.filter(
-        venta => venta.id !== id
-    );
-
-    DB.set("ventas", sales);
-    renderSales();
+    if (!confirm("¿Eliminar esta venta? Esto no revierte automáticamente el stock.")) return;
+    sales = sales.filter(v => v.id !== id); DB.set("ventas", sales); renderSales();
 }
-
 function renderSales() {
-    const busqueda = saleSearch.value
-        .trim()
-        .toLowerCase();
-
-    const ventasFiltradas = sales.filter(venta => {
-        const texto =
-            `${venta.fecha} ${venta.cedula} ${venta.marca}`
-                .toLowerCase();
-
-        return texto.includes(busqueda);
-    });
-
-    saleBody.innerHTML = ventasFiltradas
-        .map(venta => {
-            const total = venta.cantidad * venta.precio;
-
-            return `
-                <tr>
-                    <td>
-                        ${esc(venta.fecha)}
-                    </td>
-
-                    <td class="mono">
-                        ${esc(venta.cedula)}
-                    </td>
-
-                    <td>
-                        ${esc(venta.tipo)}
-                    </td>
-
-                    <td>
-                        ${esc(venta.marca)}
-                    </td>
-
-                    <td>
-                        ${venta.cantidad}
-                    </td>
-
-                    <td>
-                        ${money(venta.precio)}
-                    </td>
-
-                    <td>
-                        ${money(total)}
-                    </td>
-
-                    <td>
-                        <div class="row-actions">
-                            <button
-                                class="icon-btn"
-                                onclick="openSale('${venta.id}')"
-                                title="Editar venta"
-                            >
-                                ✎
-                            </button>
-
-                            <button
-                                class="icon-btn"
-                                onclick="deleteSale('${venta.id}')"
-                                title="Eliminar venta"
-                            >
-                                🗑
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        })
-        .join("");
-
-    saleEmpty.style.display =
-        ventasFiltradas.length ? "none" : "block";
-
-    const unidadesVendidas = sales.reduce(
-        (total, venta) => total + venta.cantidad,
-        0
-    );
-
-    const ingresos = sales.reduce(
-        (total, venta) =>
-            total + venta.cantidad * venta.precio,
-        0
-    );
-
-    const promedio = sales.length
-        ? ingresos / sales.length
-        : 0;
-
-    salesN.textContent = sales.length;
-    salesUnits.textContent = unidadesVendidas;
-    salesIncome.textContent = money(ingresos);
-    salesAvg.textContent = money(promedio);
-
-    saleCount.textContent =
-        `${ventasFiltradas.length} de ${sales.length} ventas`;
+    const busqueda = saleSearch.value.trim().toLowerCase();
+    const filtradas = sales.filter(v => `${v.fecha} ${v.cedula} ${v.producto || v.marca}`.toLowerCase().includes(busqueda));
+    saleBody.innerHTML = filtradas.map(v => `<tr><td>${esc(v.fecha)}</td><td class="mono">${esc(v.cedula)}</td><td>${esc(v.producto || v.marca)}</td><td>${v.cantidad}</td><td>${money(v.precio)}</td><td>${money(v.cantidad * v.precio)}</td><td><div class="row-actions"><button class="icon-btn" onclick="openSale('${v.id}')">✎</button><button class="icon-btn" onclick="deleteSale('${v.id}')">🗑</button></div></td></tr>`).join("");
+    saleEmpty.style.display = filtradas.length ? "none" : "block";
+    salesN.textContent = sales.length; salesUnits.textContent = sales.reduce((t,v)=>t+Number(v.cantidad||0),0); const ingresos = sales.reduce((t,v)=>t+Number(v.cantidad||0)*Number(v.precio||0),0); salesIncome.textContent = money(ingresos); salesAvg.textContent = money(sales.length ? ingresos/sales.length : 0); saleCount.textContent = `${filtradas.length} de ${sales.length} ventas`;
 }
 document.addEventListener("DOMContentLoaded", initSales);

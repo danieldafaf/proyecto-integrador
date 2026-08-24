@@ -12,13 +12,16 @@
     <header class="topbar">
         <div>
             <span class="brand-tag">BODEGA · REG. 04</span>
-            <h1 class="brand-title">Ventas de baterías</h1>
+            <h1 class="brand-title">Registro de ventas</h1>
         </div>
         <div class="top-actions">
             <nav class="nav">
                 <a href="menu.html">Menú</a>
                 <a href="clientes.html">Clientes</a>
                 <a href="ventas.html" class="active">Ventas</a>
+                <a href="compras.html">Compras</a>
+                <a href="movimientos.html">Movimientos</a>
+                <a href="proyeccion.html">Proyección</a>
                 <a href="inventario.html">Inventario</a>
             </nav>
             <button class="btn" onclick="logout()">Cerrar sesión</button>
@@ -30,8 +33,8 @@
         <!-- Hero -->
         <section class="hero">
             <div>
-                <h2>Registro de ventas</h2>
-                <p>Consulta ventas por cliente, marca o fecha.</p>
+                <h2>Salidas y ventas</h2>
+                <p>Registra salidas de productos y actualiza automáticamente el stock.</p>
             </div>
             <button class="btn btn-primary" onclick="openSale()">+ Nueva venta</button>
         </section>
@@ -58,7 +61,7 @@
 
         <!-- Barra de búsqueda -->
         <section class="card toolbar">
-            <input class="input" id="saleSearch" placeholder="Buscar cédula, marca o fecha…">
+            <input class="input" id="saleSearch" placeholder="Buscar cédula, producto o fecha…">
         </section>
 
         <!-- Tabla de ventas -->
@@ -68,8 +71,7 @@
                     <tr>
                         <th>Fecha</th>
                         <th>Cliente</th>
-                        <th>Vehículo</th>
-                        <th>Marca</th>
+                        <th>Producto</th>
                         <th>Cantidad</th>
                         <th>Precio</th>
                         <th>Total</th>
@@ -84,7 +86,7 @@
         <!-- Pie -->
         <footer class="foot">
             <span id="saleCount"></span>
-            <span>Sin generación ni carga de archivos CSV.</span>
+            <span>Los movimientos se guardan en el historial del sistema.</span>
         </footer>
     </main>
 
@@ -100,34 +102,11 @@
                 <input type="hidden" id="saleId">
                 
                 <div class="grid2">
-                    <div class="field">
-                        <label>Fecha</label>
-                        <input class="input" id="fecha" type="date" required>
-                    </div>
-                    <div class="field">
-                        <label>Cédula del cliente</label>
-                        <input class="input" id="cedulaCliente" maxlength="10" required>
-                    </div>
-                    <div class="field">
-                        <label>Tipo de vehículo</label>
-                        <select class="input" id="tipoVehiculo">
-                            <option>MOTO</option>
-                            <option>CAMIONETA</option>
-                            <option>CAMIÓN</option>
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label>Repuesto</label>
-                        <input class="input" id="marcaVenta" required>
-                    </div>
-                    <div class="field">
-                        <label>Cantidad</label>
-                        <input class="input" id="cantidadVenta" type="number" min="1" required>
-                    </div>
-                    <div class="field">
-                        <label>Precio unitario ($)</label>
-                        <input class="input" id="precioVenta" type="number" min="0.01" step="0.01" required>
-                    </div>
+                    <div class="field"><label>Fecha</label><input class="input" id="fecha" type="date" required></div>
+                    <div class="field"><label>Cédula del cliente</label><input class="input" id="cedulaCliente" maxlength="10" required></div>
+                    <div class="field"><label>Producto</label><select class="input" id="productoVenta" required onchange="actualizarPrecioVenta()"></select></div>
+                    <div class="field"><label>Cantidad</label><input class="input" id="cantidadVenta" type="number" min="1" required></div>
+                    <div class="field"><label>Precio unitario ($)</label><input class="input" id="precioVenta" type="number" min="0" step="0.01" required></div>
                 </div>
                 
                 <div class="notice">
@@ -144,6 +123,5 @@
 
     <script src="app.js"></script>
     <script src="ventas.js"></script>
-    <script>initSales()</script>
 </body>
 </html>

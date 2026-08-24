@@ -1,288 +1,151 @@
-let batteries = [];
+let productos = [];
 
-function seedBatteries() {
+function seedProductos() {
     return [
-        {
-            id: uid(),
-            codigo: "BAT-001",
-            marca: "BOSCH",
-            modelo: "S4 60D",
-            tipo: "AUTO",
-            voltaje: "12 V",
-            capacidad: "60 Ah",
-            stock: 12,
-            minimo: 5,
-            precio: 105
-        },
-        {
-            id: uid(),
-            codigo: "BAT-002",
-            marca: "YUASA",
-            modelo: "YTX7L-BS",
-            tipo: "MOTO",
-            voltaje: "12 V",
-            capacidad: "6 Ah",
-            stock: 3,
-            minimo: 5,
-            precio: 48
-        },
-        {
-            id: uid(),
-            codigo: "BAT-003",
-            marca: "MAC",
-            modelo: "AGM 70",
-            tipo: "CAMIONETA",
-            voltaje: "12 V",
-            capacidad: "70 Ah",
-            stock: 0,
-            minimo: 3,
-            precio: 142
-        }
+        { id: uid(), codigo: "PROD-001", nombre: "Teclado inalámbrico", categoria: "Tecnología", descripcion: "Teclado USB inalámbrico", proveedor: "Proveedor General", ubicacion: "A-01", stock: 25, minimo: 8, maximo: 40, precio: 25 },
+        { id: uid(), codigo: "PROD-002", nombre: "Mouse óptico", categoria: "Tecnología", descripcion: "Mouse USB", proveedor: "Proveedor General", ubicacion: "A-02", stock: 7, minimo: 10, maximo: 30, precio: 12 },
+        { id: uid(), codigo: "PROD-003", nombre: "Resma de papel", categoria: "Oficina", descripcion: "Papel A4 75 g", proveedor: "Papelería Central", ubicacion: "B-01", stock: 0, minimo: 5, maximo: 25, precio: 5.5 }
     ];
 }
 
 function initInventory() {
     requireSession();
-
-    batteries = DB.get("baterias", null);
-
-    if (!batteries) {
-        batteries = seedBatteries();
-        DB.set("baterias", batteries);
+    productos = DB.get("productos", []);
+    if (!productos.length) {
+        productos = seedProductos();
+        DB.set("productos", productos);
     }
-
-    invSearch.addEventListener(
-        "input",
-        renderInventory
-    );
-
-    invType.addEventListener(
-        "change",
-        renderInventory
-    );
-
-    invStatus.addEventListener(
-        "change",
-        renderInventory
-    );
-
-    batteryForm.addEventListener(
-        "submit",
-        saveBattery
-    );
+    invSearch.addEventListener("input", renderInventory);
+    invCategory.addEventListener("change", renderInventory);
+    invStatus.addEventListener("change", renderInventory);
+    productForm.addEventListener("submit", saveProduct);
     renderInventory();
 }
-function statusBattery(bateria) {
-    if (bateria.stock <= 0) {
-        return "out";
-    }
-    if (bateria.stock < bateria.minimo) {
-        return "low";
-    }
+
+function statusProduct(producto) {
+    if (Number(producto.stock) <= 0) return "out";
+    if (Number(producto.stock) <= Number(producto.minimo)) return "low";
     return "ok";
 }
+
 function statusText(estado) {
-    if (estado === "out") {
-        return "Agotado";
-    }
-    if (estado === "low") {
-        return "Stock bajo";
-    }
-    return "En stock";
+    return estado === "out" ? "Agotado" : estado === "low" ? "Stock bajo" : "En stock";
 }
-function openBattery(id = "") {
-    batteryForm.reset();
-    batteryId.value = "";
+
+function openProduct(id = "") {
+    productForm.reset();
+    productId.value = "";
     minimo.value = 5;
-    batteryTitle.textContent = "Nueva batería";
+    maximo.value = 20;
+    productTitle.textContent = "Nuevo producto";
     if (id) {
-        const bateria = batteries.find(
-            item => item.id === id
-        );
-        batteryId.value = bateria.id;
-        codigo.value = bateria.codigo;
-        marca.value = bateria.marca;
-        modelo.value = bateria.modelo;
-        tipo.value = bateria.tipo;
-        voltaje.value = bateria.voltaje;
-        capacidad.value = bateria.capacidad;
-        stock.value = bateria.stock;
-        minimo.value = bateria.minimo;
-        precio.value = bateria.precio;
-        batteryTitle.textContent = "Editar batería";
+        const producto = productos.find(item => item.id === id);
+        if (!producto) return;
+        productId.value = producto.id;
+        codigo.value = producto.codigo;
+        nombre.value = producto.nombre;
+        categoria.value = producto.categoria;
+        descripcion.value = producto.descripcion;
+        proveedor.value = producto.proveedor;
+        ubicacion.value = producto.ubicacion;
+        stock.value = producto.stock;
+        minimo.value = producto.minimo;
+        maximo.value = producto.maximo;
+        precio.value = producto.precio;
+        productTitle.textContent = "Editar producto";
     }
-    modal("batteryModal", true);
+    modal("productModal", true);
 }
-function closeBattery() {
-    modal("batteryModal", false);
-}
-function saveBattery(evento) {
+
+function closeProduct() { modal("productModal", false); }
+
+function saveProduct(evento) {
     evento.preventDefault();
-    const datosBateria = {
+    const datos = {
         codigo: codigo.value.trim().toUpperCase(),
-        marca: marca.value.trim().toUpperCase(),
-        modelo: modelo.value.trim().toUpperCase(),
-        tipo: tipo.value,
-        voltaje: voltaje.value.trim(),
-        capacidad: capacidad.value.trim(),
+        nombre: nombre.value.trim(),
+        categoria: categoria.value.trim(),
+        descripcion: descripcion.value.trim(),
+        proveedor: proveedor.value.trim(),
+        ubicacion: ubicacion.value.trim(),
         stock: Number(stock.value),
         minimo: Number(minimo.value),
+        maximo: Number(maximo.value),
         precio: Number(precio.value)
     };
-    const id = batteryId.value;
-    const codigoRepetido = batteries.some(bateria => {
-        return (
-            bateria.codigo === datosBateria.codigo &&
-            bateria.id !== id
-        );
-    });
-    if (codigoRepetido) {
-        alert("Ese código ya existe.");
-        return;
-    }
+    if (datos.maximo < datos.minimo) return alert("El stock máximo debe ser mayor o igual al stock mínimo.");
+    if (datos.stock < 0 || datos.minimo < 0 || datos.maximo < 0 || datos.precio < 0) return alert("Los valores numéricos no pueden ser negativos.");
+    const id = productId.value;
+    console.log("ID actual:", id);
+    console.log("Código ingresado:", datos.codigo);
+    console.table(productos);
+    if (productos.some(p => p.codigo === datos.codigo && p.id !== id)) return alert("Ese código ya existe.");
+
     if (id) {
-        const bateriaExistente = batteries.find(
-            bateria => bateria.id === id
-        );
-        Object.assign(
-            bateriaExistente,
-            datosBateria
-        );
+        const existente = productos.find(p => p.id === id);
+        Object.assign(existente, datos);
     } else {
-        batteries.push({
-            id: uid(),
-            ...datosBateria
-        });
+        const nuevo = { id: uid(), ...datos };
+        productos.push(nuevo);
+//        registrarMovimiento("ENTRADA", nuevo.nombre, nuevo.stock, "Registro inicial del producto");
     }
-    DB.set("baterias", batteries);
-    closeBattery();
+    DB.set("productos", productos);
+    closeProduct();
     renderInventory();
 }
-function deleteBattery(id) {
-    const confirmar = confirm(
-        "¿Eliminar esta batería del inventario?"
-    );
-    if (!confirmar) {
-        return;
-    }
-    batteries = batteries.filter(
-        bateria => bateria.id !== id
-    );
-    DB.set("baterias", batteries);
+
+function deleteProduct(id) {
+    if (!confirm("¿Eliminar este producto del inventario?")) return;
+    const producto = productos.find(p => p.id === id);
+    productos = productos.filter(p => p.id !== id);
+    DB.set("productos", productos);
+    if (producto) registrarMovimiento("ELIMINACIÓN", producto.nombre, producto.stock, "Producto eliminado");
     renderInventory();
 }
+
 function renderInventory() {
-    const busqueda = invSearch.value
-        .trim()
-        .toLowerCase();
-    const tipoSeleccionado = invType.value;
+    const busqueda = invSearch.value.trim().toLowerCase();
+    const categoriaSeleccionada = invCategory.value;
     const estadoSeleccionado = invStatus.value;
-    const bateriasFiltradas = batteries.filter(bateria => {
-        const texto =
-            `${bateria.codigo} ${bateria.marca} ${bateria.modelo}`
-                .toLowerCase();
-        const coincideBusqueda =
-            texto.includes(busqueda);
-        const coincideTipo =
-            !tipoSeleccionado ||
-            bateria.tipo === tipoSeleccionado;
-        const coincideEstado =
-            !estadoSeleccionado ||
-            statusBattery(bateria) === estadoSeleccionado;
-        return (
-            coincideBusqueda &&
-            coincideTipo &&
-            coincideEstado
-        );
+    const filtrados = productos.filter(producto => {
+        const texto = `${producto.codigo} ${producto.nombre} ${producto.categoria} ${producto.proveedor}`.toLowerCase();
+        return texto.includes(busqueda) &&
+            (!categoriaSeleccionada || producto.categoria === categoriaSeleccionada) &&
+            (!estadoSeleccionado || statusProduct(producto) === estadoSeleccionado);
     });
-    invBody.innerHTML = bateriasFiltradas
-     .map(bateria => {
-       const estado = statusBattery(bateria);
-            return `
-                <tr>
-                    <td class="mono">
-                        ${esc(bateria.codigo)}
-                    </td>
 
-                    <td>
-                        <strong>
-                            ${esc(bateria.marca)}
-                        </strong>
+    const categorias = [...new Set(productos.map(p => p.categoria).filter(Boolean))];
+    const actual = invCategory.value;
+    invCategory.innerHTML = `<option value="">Todas las categorías</option>` + categorias.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
+    invCategory.value = categorias.includes(actual) ? actual : "";
 
-                        <br>
+    invBody.innerHTML = filtrados.map(producto => {
+        const estado = statusProduct(producto);
+        return `<tr>
+            <td class="mono">${esc(producto.codigo)}</td>
+            <td><strong>${esc(producto.nombre)}</strong><br><small>${esc(producto.descripcion)}</small></td>
+            <td>${esc(producto.categoria)}</td>
+            <td>${esc(producto.proveedor)}</td>
+            <td>${esc(producto.ubicacion)}</td>
+            <td class="mono">${producto.stock}</td>
+            <td>${money(producto.precio)}</td>
+            <td><span class="badge ${estado}">${statusText(estado)}</span></td>
+            <td><div class="row-actions">
+                <button class="icon-btn" onclick="openProduct('${producto.id}')" title="Editar">✎</button>
+                <button class="icon-btn" onclick="deleteProduct('${producto.id}')" title="Eliminar">🗑</button>
+            </div></td>
+        </tr>`;
+    }).join("");
 
-                        <small>
-                            ${esc(bateria.modelo)}
-                        </small>
-                    </td>
-
-                    <td>
-                        ${esc(bateria.tipo)}
-                    </td>
-
-                    <td>
-                        ${esc(bateria.voltaje)}
-                    </td>
-
-                    <td>
-                        ${esc(bateria.capacidad)}
-                    </td>
-
-                    <td class="mono">
-                        ${bateria.stock}
-                    </td>
-
-                    <td>
-                        ${money(bateria.precio)}
-                    </td>
-
-                    <td>
-                        <span class="badge ${estado}">
-                            ${statusText(estado)}
-                        </span>
-                    </td>
-
-                    <td>
-                        <div class="row-actions">
-                            <button
-                                class="icon-btn"
-                                onclick="openBattery('${bateria.id}')"
-                                title="Editar batería"
-                            >
-                                ✎
-                            </button>
-
-                            <button
-                                class="icon-btn"
-                                onclick="deleteBattery('${bateria.id}')"
-                                title="Eliminar batería"
-                            >
-                                🗑
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        })
-        .join("");
-    invEmpty.style.display =
-        bateriasFiltradas.length ? "none" : "block";
-    const totalUnidades = batteries.reduce(
-        (total, bateria) =>
-            total + bateria.stock,
-        0);
-    const valorInventario = batteries.reduce(
-        (total, bateria) =>
-            total + bateria.stock * bateria.precio,
-        0);
-    const bateriasConProblemas = batteries.filter(
-        bateria => statusBattery(bateria) !== "ok"
-    ).length;
-    invModels.textContent = batteries.length;
-    invUnits.textContent = totalUnidades;
-    invValue.textContent = money(valorInventario);
-    invLow.textContent = bateriasConProblemas;
-    invCount.textContent =
-        `${bateriasFiltradas.length} de ${batteries.length} baterías`;
+    invEmpty.style.display = filtrados.length ? "none" : "block";
+    const unidades = productos.reduce((t, p) => t + Number(p.stock || 0), 0);
+    const valor = productos.reduce((t, p) => t + Number(p.stock || 0) * Number(p.precio || 0), 0);
+    const problemas = productos.filter(p => statusProduct(p) !== "ok").length;
+    invModels.textContent = productos.length;
+    invUnits.textContent = unidades;
+    invValue.textContent = money(valor);
+    invLow.textContent = problemas;
+    invCount.textContent = `${filtrados.length} de ${productos.length} productos`;
 }
+
 document.addEventListener("DOMContentLoaded", initInventory);

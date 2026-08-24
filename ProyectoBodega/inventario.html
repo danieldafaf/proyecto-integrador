@@ -1,52 +1,67 @@
 <!doctype html>
 <html lang="es">
+
 <head>
-    <title>Inventario - Almacén</title>
+    <title>Inventario - Bodega</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
     <header class="topbar">
         <div>
-            <span class="brand-tag">BODEGA · REG. 04</span>
+            <span class="brand-tag">BODEGA · GESTIÓN</span>
             <h1 class="brand-title">Control de inventario</h1>
         </div>
+
         <div class="top-actions">
             <nav class="nav">
                 <a href="menu.html">Menú</a>
                 <a href="clientes.html">Clientes</a>
                 <a href="ventas.html">Ventas</a>
                 <a href="inventario.html" class="active">Inventario</a>
+                <a href="proyeccion.html">Proyección</a>
             </nav>
-            <button class="btn" onclick="logout()">Cerrar sesión</button>
+
+            <button class="btn" onclick="logout()">
+                Cerrar sesión
+            </button>
         </div>
     </header>
 
-
     <main class="container">
+
         <section class="hero">
             <div>
-                <h2>Inventario de baterías</h2>
-                <p>Control de stock, precio, voltaje y capacidad.</p>
+                <h2>Inventario general</h2>
+                <p>
+                    Control de productos, existencias, ubicaciones y niveles de stock.
+                </p>
             </div>
-            <button class="btn btn-primary" onclick="openBattery()">+ Nueva batería</button>
+
+            <button class="btn btn-primary" onclick="openProduct()">
+                + Nuevo producto
+            </button>
         </section>
 
         <section class="stats">
             <div class="card stat">
-                <small>Modelos</small>
+                <small>Productos</small>
                 <strong id="invModels">0</strong>
             </div>
+
             <div class="card stat">
-                <small>Unidades en stock</small>
+                <small>Unidades</small>
                 <strong id="invUnits">0</strong>
             </div>
+
             <div class="card stat">
                 <small>Valor total</small>
                 <strong id="invValue">$0.00</strong>
             </div>
+
             <div class="card stat warn">
                 <small>Stock bajo / agotado</small>
                 <strong id="invLow">0</strong>
@@ -54,13 +69,16 @@
         </section>
 
         <section class="card toolbar">
-            <input class="input" id="invSearch" placeholder="Buscar código, marca o modelo…">
-            <select class="input" id="invType">
-                <option value="">Todos los vehículos</option>
-                <option>MOTO</option>
-                <option>CAMIONETA</option>
-                <option>CAMIÓN</option>
+            <input
+                class="input"
+                id="invSearch"
+                placeholder="Buscar código, producto, categoría o proveedor…"
+            >
+
+            <select class="input" id="invCategory">
+                <option value="">Todas las categorías</option>
             </select>
+
             <select class="input" id="invStatus">
                 <option value="">Todos los estados</option>
                 <option value="ok">En stock</option>
@@ -74,99 +92,127 @@
                 <thead>
                     <tr>
                         <th>Código</th>
-                        <th>Marca / modelo</th>
-                        <th>Vehículo</th>
-                        <th>Voltaje</th>
-                        <th>Capacidad</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th>Proveedor</th>
+                        <th>Ubicación</th>
                         <th>Stock</th>
                         <th>Precio</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
+
                 <tbody id="invBody"></tbody>
             </table>
-            <div class="empty" id="invEmpty">No hay baterías que mostrar.</div>
-        </section>
 
+            <div class="empty" id="invEmpty">
+                No hay productos que mostrar.
+            </div>
+        </section>
 
         <footer class="foot">
             <span id="invCount"></span>
-            <span>Información almacenada localmente, sin Excel ni CSV.</span>
+            <span>Información almacenada localmente.</span>
         </footer>
+
     </main>
 
-    <div class="overlay" id="batteryModal" hidden>
+    <div class="overlay" id="productModal" hidden>
         <section class="modal">
+
             <div class="modal-head">
-                <h3 id="batteryTitle">Nueva batería</h3>
-                <button class="close" onclick="closeBattery()">✕</button>
+                <h3 id="productTitle">Nuevo producto</h3>
+                <button class="close" onclick="closeProduct()">✕</button>
             </div>
 
-            <form class="form" id="batteryForm">
-                <input type="hidden" id="batteryId">
+            <form class="form" id="productForm">
 
-                <!-- Datos principales -->
+                <input type="hidden" id="productId">
+
                 <div class="grid2">
+
                     <div class="field">
                         <label>Código</label>
                         <input class="input mono" id="codigo" required>
                     </div>
-                    <div class="field">
-                        <label>Marca</label>
-                        <input class="input" id="marca" required>
-                    </div>
-                    <div class="field">
-                        <label>Modelo</label>
-                        <input class="input" id="modelo" required>
-                    </div>
-                    <div class="field">
-                        <label>Tipo de vehículo</label>
-                        <select class="input" id="tipo">
-                            <option>MOTO</option>
-                            <option>AUTO</option>
-                            <option>CAMIONETA</option>
-                            <option>CAMIÓN</option>
-                        </select>
-                    </div>
-                </div>
 
-                <!-- Especificaciones -->
-                <div class="grid3">
                     <div class="field">
-                        <label>Voltaje</label>
-                        <input class="input" id="voltaje" placeholder="12 V" required>
+                        <label>Nombre</label>
+                        <input class="input" id="nombre" required>
                     </div>
+
                     <div class="field">
-                        <label>Capacidad</label>
-                        <input class="input" id="capacidad" placeholder="60 Ah" required>
+                        <label>Categoría</label>
+                        <input class="input" id="categoria" required>
                     </div>
+
+                    <div class="field">
+                        <label>Proveedor</label>
+                        <input class="input" id="proveedor" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Descripción</label>
+                        <input class="input" id="descripcion">
+                    </div>
+
+                    <div class="field">
+                        <label>Ubicación</label>
+                        <input class="input" id="ubicacion" placeholder="A-01" required>
+                    </div>
+
                     <div class="field">
                         <label>Stock mínimo</label>
-                        <input class="input" id="minimo" type="number" min="0" value="5" required>
+                        <input class="input" id="minimo" type="number" min="0" required>
                     </div>
+
+                    <div class="field">
+                        <label>Stock máximo</label>
+                        <input class="input" id="maximo" type="number" min="0" required>
+                    </div>
+
                     <div class="field">
                         <label>Stock actual</label>
                         <input class="input" id="stock" type="number" min="0" required>
                     </div>
+
                     <div class="field">
-                        <label>Precio ($)</label>
-                        <input class="input" id="precio" type="number" min="0.01" step="0.01" required>
+                        <label>Precio unitario ($)</label>
+                        <input
+                            class="input"
+                            id="precio"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            required
+                        >
                     </div>
+
                 </div>
 
-                <!-- Acciones -->
-                <div class="form-actions">
-                    <button type="button" class="btn" onclick="closeBattery()">Cancelar</button>
-                    <button class="btn btn-primary">Guardar batería</button>
+                <div class="notice">
+                    El estado se determina automáticamente según el stock mínimo.
                 </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="closeProduct()">
+                        Cancelar
+                    </button>
+
+                    <button class="btn btn-primary">
+                        Guardar producto
+                    </button>
+                </div>
+
             </form>
+
         </section>
     </div>
 
-
-    <script src="inventario.js"></script>
     <script src="app.js"></script>
-    <script>initInventory()</script>
+    <script src="inventario.js"></script>
+
 </body>
+
 </html>
