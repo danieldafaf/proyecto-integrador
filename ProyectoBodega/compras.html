@@ -1,6 +1,100 @@
-<!doctype html><html lang="es"><head><title>Compras - Bodega</title><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><link rel="stylesheet" href="styles.css"></head><body>
-<header class="topbar"><div><span class="brand-tag">BODEGA · ABASTECIMIENTO</span><h1 class="brand-title">Compras</h1></div><div class="top-actions"><nav class="nav"><a href="menu.html">Menú</a><a href="inventario.html">Inventario</a><a href="compras.html" class="active">Compras</a><a href="movimientos.html">Movimientos</a><a href="proyeccion.html">Proyección</a></nav><button class="btn" onclick="logout()">Cerrar sesión</button></div></header>
-<main class="container"><section class="hero"><div><h2>Registrar compra</h2><p>Una compra confirmada aumenta el stock y puede generar un correo de notificación.</p></div></section>
-<section class="card" style="padding:20px"><form id="purchaseForm" class="form"><div class="grid2"><div class="field"><label>Fecha</label><input class="input" id="compraFecha" type="date" required></div><div class="field"><label>Proveedor</label><input class="input" id="compraProveedor" required></div><div class="field"><label>Producto</label><select class="input" id="compraProducto" required></select></div><div class="field"><label>Cantidad</label><input class="input" id="compraCantidad" type="number" min="1" required></div><div class="field"><label>Precio unitario ($)</label><input class="input" id="compraPrecio" type="number" min="0" step="0.01" required></div><div class="field"><label>Correo de notificación</label><input class="input" id="correoCompra" type="email" placeholder="correo@ejemplo.com" required></div></div><div class="notice">Total: <strong id="compraTotal">$0.00</strong></div><div class="form-actions"><button class="btn btn-primary">Confirmar compra</button></div></form></section>
-<section class="card tablewrap" style="margin-top:20px"><table class="tbl"><thead><tr><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Cantidad</th><th>Total</th><th>Correo</th></tr></thead><tbody id="purchaseBody"></tbody></table><div class="empty" id="purchaseEmpty">No hay compras registradas.</div></section></main>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script><script src="app.js"></script><script src="compras.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compras - Bodega</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Encabezado / Navegación principal -->
+  <header class="topbar">
+    <div>
+      <span class="brand-tag">BODEGA · ABASTECIMIENTO</span>
+      <h1 class="brand-title">Compras</h1>
+    </div>
+    <div class="top-actions">
+      <nav class="nav">
+        <a href="menu.html">Menú</a>
+        <a href="inventario.html">Inventario</a>
+        <a href="compras.html" class="active">Compras</a>
+        <a href="movimientos.html">Movimientos</a>
+        <a href="proyeccion.html">Proyección</a>
+      </nav>
+      <button class="btn" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="container">
+    <section class="hero">
+      <div>
+        <h2>Registrar compra</h2>
+        <p>Una compra confirmada aumenta el stock y puede generar un correo de notificación.</p>
+      </div>
+    </section>
+
+    <!-- Formulario de compra -->
+    <section class="card" style="padding: 20px;">
+      <form id="purchaseForm" class="form">
+        <div class="grid2">
+          <div class="field">
+            <label for="compraFecha">Fecha</label>
+            <input class="input" id="compraFecha" type="date" required>
+          </div>
+          <div class="field">
+            <label for="compraProveedor">Proveedor</label>
+            <input class="input" id="compraProveedor" required>
+          </div>
+          <div class="field">
+            <label for="compraProducto">Producto</label>
+            <select class="input" id="compraProducto" required></select>
+          </div>
+          <div class="field">
+            <label for="compraCantidad">Cantidad</label>
+            <input class="input" id="compraCantidad" type="number" min="1" required>
+          </div>
+          <div class="field">
+            <label for="compraPrecio">Precio unitario ($)</label>
+            <input class="input" id="compraPrecio" type="number" min="0" step="0.01" required>
+          </div>
+          <div class="field">
+            <label for="correoCompra">Correo de notificación</label>
+            <input class="input" id="correoCompra" type="email" placeholder="correo@ejemplo.com" required>
+          </div>
+        </div>
+
+        <div class="notice">Total: <strong id="compraTotal">$0.00</strong></div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Confirmar compra</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Tabla de historial de compras -->
+    <section class="card tablewrap" style="margin-top: 20px;">
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Proveedor</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Total</th>
+            <th>Correo</th>
+          </tr>
+        </thead>
+        <tbody id="purchaseBody"></tbody>
+      </table>
+      <div class="empty" id="purchaseEmpty">No hay compras registradas.</div>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="app.js"></script>
+  <script src="compras.js"></script>
+</body>
+</html>
