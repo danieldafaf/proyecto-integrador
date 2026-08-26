@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <title>Clientes - Almacén</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <header class="topbar">
+        <div>
+            <span class="brand-tag">BODEGA · REG. 04</span>
+            <h1 class="brand-title">Gestión de clientes</h1>
+        </div>
+        <div class="top-actions">
+            <nav class="nav">
+                <a href="menu.html">Menú</a>
+                <a href="clientes.html" class="active">Clientes</a>
+                <a href="ventas.html">Ventas</a>
+                <a href="inventario.html">Inventario</a>
+                <a href="compras.html">Compras</a>
+                <a href="movimientos.html">Movimientos</a>
+                <a href="proyeccion.html">Proyección</a>
+            </nav>
+            <button class="btn" onclick="logout()">Cerrar sesión</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Hero -->
+        <section class="hero">
+            <div>
+                <h2>Clientes registrados</h2>
+                <p>Los datos permanecen guardados en este navegador.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openClient()">+ Nuevo cliente</button>
+        </section>
+
+        <section class="card toolbar">
+            <input class="input" id="clientSearch" placeholder="Buscar por nombre o cédula…">
+        </section>
+
+        <section class="card tablewrap">
+            <table class="tbl">
+                <thead>
+                    <tr>
+                        <th>Cédula</th>
+                        <th>Nombre</th>
+                        <th>Teléfono</th>
+                        <th>Correo</th>
+                        <th>Dirección</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="clientBody"></tbody>
+            </table>
+            <div class="empty" id="clientEmpty">No hay clientes registrados.</div>
+        </section>
+
+        <footer class="foot">
+            <span id="clientCount"></span>
+            <span>Sin generación ni carga de archivos CSV.</span>
+        </footer>
+    </main>
+
+    <div class="overlay" id="clientModal" hidden>
+        <section class="modal">
+            <div class="modal-head">
+                <h3 id="clientTitle">Nuevo cliente</h3>
+                <button class="close" onclick="closeClient()">✕</button>
+            </div>
+
+            <form class="form" id="clientForm">
+                <input type="hidden" id="clientId">
+
+                <div class="grid2">
+                    <div class="field">
+                        <label>Cédula</label>
+                        <input class="input" id="cedula" maxlength="10" required>
+                    </div>
+                    <div class="field">
+                        <label>Nombre completo</label>
+                        <input class="input" id="nombre" required>
+                    </div>
+                    <div class="field">
+                        <label>Teléfono</label>
+                        <input class="input" id="telefono" maxlength="10" required>
+                    </div>
+                    <div class="field">
+                        <label>Correo</label>
+                        <input class="input" id="correo" type="email" required>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Dirección</label>
+                    <input class="input" id="direccion" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn" onclick="closeClient()">Cancelar</button>
+                    <button class="btn btn-primary">Guardar cliente</button>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="clientes.js"></script>
+    <script>initClients()</script>
+</body>
+</html>

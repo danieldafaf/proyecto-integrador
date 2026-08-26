@@ -1,7 +1,66 @@
 <!doctype html>
 <html lang="es">
+<<<<<<< HEAD
     <head><title>Movimientos - Bodega</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width,initial-scale=1.0"><link rel="stylesheet" href="styles.css"></head><body>
 <header class="topbar"><div><span class="brand-tag">BODEGA · CONTROL</span><h1 class="brand-title">Historial de movimientos</h1></div><div class="top-actions"><nav class="nav"><a href="menu.html">Menú</a><a href="inventario.html">Inventario</a><a href="compras.html">Compras</a><a href="movimientos.html" class="active">Movimientos</a><a href="proyeccion.html">Proyección</a></nav><button class="btn" onclick="logout()">Cerrar sesión</button></div></header>
 <main class="container"><section class="hero"><div><h2>Historial</h2><p>Consulta las entradas, salidas y cambios realizados en el inventario.</p></div></section><section class="card toolbar"><input class="input" id="movSearch" placeholder="Buscar producto, usuario o tipo…"><select class="input" id="movTipo"><option value="">Todos los movimientos</option><option>ENTRADA</option><option>SALIDA</option><option>ELIMINACIÓN</option></select></section><section class="card tablewrap"><table class="tbl"><thead><tr><th>Fecha</th><th>Tipo</th><th>Producto</th><th>Cantidad</th><th>Detalle</th><th>Usuario</th></tr></thead><tbody id="movBody"></tbody></table><div class="empty" id="movEmpty">No hay movimientos registrados.</div></section></main><script src="app.js"></script><script src="movimientos.js"></script></body></html>
+=======
+
+<head>
+    <title>Movimientos - Bodega</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header class="topbar">
+        <div><span class="brand-tag">BODEGA · CONTROL</span>
+            <h1 class="brand-title">Historial de movimientos</h1>
+        </div>
+        <div class="top-actions">
+            <nav class="nav"><a href="menu.html">Menú</a><a href="inventario.html">Inventario</a><a
+                    href="compras.html">Compras</a><a href="movimientos.html" class="active">Movimientos</a><a
+                    href="proyeccion.html">Proyección</a></nav><button class="btn" onclick="logout()">Cerrar
+                sesión</button>
+        </div>
+    </header>
+    <main class="container">
+        <section class="hero">
+            <div>
+                <h2>Historial</h2>
+                <p>Consulta las entradas, salidas y cambios realizados en el inventario.</p>
+            </div>
+        </section>
+        <section class="card toolbar"><input class="input" id="movSearch"
+                placeholder="Buscar producto, usuario o tipo…"><select class="input" id="movTipo">
+                <option value="">Todos los movimientos</option>
+                <option>ENTRADA</option>
+                <option>SALIDA</option>
+                <option>ELIMINACIÓN</option>
+            </select></section>
+        <section class="card tablewrap">
+            <table class="tbl">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Detalle</th>
+                        <th>Usuario</th>
+                    </tr>
+                </thead>
+                <tbody id="movBody"></tbody>
+            </table>
+            <div class="empty" id="movEmpty">No hay movimientos registrados.</div>
+        </section>
+    </main>
+    <script src="app.js"></script>
+    <script src="movimientos.js"></script>
+</body>
+
+</html>
+>>>>>>> 6402b8485f5e99fc080d67786b6778325a5defbc
