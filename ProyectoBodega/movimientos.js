@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-let movimientos=[];
-function initMovimientos(){requireSession();movimientos=DB.get("movimientos",[]);movSearch.addEventListener("input",renderMovimientos);movTipo.addEventListener("change",renderMovimientos);renderMovimientos();}
-function renderMovimientos(){const q=movSearch.value.trim().toLowerCase();const tipo=movTipo.value;const filtrados=movimientos.filter(m=>`${m.tipo} ${m.producto} ${m.usuario} ${m.detalle}`.toLowerCase().includes(q)&&(!tipo||m.tipo===tipo));movBody.innerHTML=filtrados.map(m=>`<tr><td>${new Date(m.fecha).toLocaleString("es-EC")}</td><td><span class="badge ${m.tipo==='ENTRADA'?'ok':m.tipo==='SALIDA'?'low':'out'}">${esc(m.tipo)}</span></td><td>${esc(m.producto)}</td><td>${m.cantidad}</td><td>${esc(m.detalle)}</td><td>${esc(m.usuario)}</td></tr>`).join("");movEmpty.style.display=filtrados.length?"none":"block";}
-document.addEventListener("DOMContentLoaded",initMovimientos);
-=======
 let movimientos = [];
 
 function initMovimientos() {
@@ -51,4 +45,3 @@ function renderMovimientos() {
 }
 
 document.addEventListener("DOMContentLoaded", initMovimientos);
->>>>>>> 6402b8485f5e99fc080d67786b6778325a5defbc
