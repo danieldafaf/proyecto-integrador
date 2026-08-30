@@ -9,6 +9,8 @@ function initSales() {
     saleForm.addEventListener("submit", saveSale);
     cantidadVenta.addEventListener("input", previewTotal);
     precioVenta.addEventListener("input", previewTotal);
+    
+    productoVenta.addEventListener("change", actualizarPrecioVenta);
 
     cargarProductosVenta();
     renderSales();
@@ -36,6 +38,8 @@ function actualizarPrecioVenta() {
 
     if (producto) {
         precioVenta.value = Number(producto.precio).toFixed(2);
+    } else {
+        precioVenta.value = "";
     }
 
     previewTotal();
@@ -125,7 +129,7 @@ function saveSale(evento) {
 
     const datos = {
         fecha: fecha.value,
-        cedula: cedulaCliente.value,
+        cedula: cedulaCliente.value.trim(),
         productoId: producto.id,
         producto: producto.nombre,
         cantidad,
@@ -133,10 +137,11 @@ function saveSale(evento) {
     };
 
     if (id) {
+        // Al editar una venta existente
         const existente = sales.find(v => v.id === id);
-
         Object.assign(existente, datos);
     } else {
+        // Al registrar una nueva venta (SALIDA)
         producto.stock -= cantidad;
 
         DB.set("productos", productos);
@@ -146,33 +151,55 @@ function saveSale(evento) {
             ...datos
         });
 
+        // Registrar el movimiento de SALIDA
         registrarMovimiento(
             "SALIDA",
             producto.nombre,
             cantidad,
-            "Venta registrada"
+            `Venta a cliente (${datos.cedula})`
         );
     }
 
     DB.set("ventas", sales);
 
     closeSale();
+    cargarProductosVenta();
     renderSales();
 }
 
 function deleteSale(id) {
+    const venta = sales.find(v => v.id === id);
+    if (!venta) return;
+
     if (
         !confirm(
-            "¿Eliminar esta venta? Esto no revierte automáticamente el stock."
+            "¿Desea eliminar esta venta? Se devolverá el stock al inventario y se registrará la devolución."
         )
     ) {
         return;
     }
 
-    sales = sales.filter(v => v.id !== id);
+    // CORRECCIÓN 2: Revertir stock en inventario y registrar movimiento de devolución
+    const productos = DB.get("productos", []);
+    const producto = productos.find(p => p.id === venta.productoId);
 
+    if (producto) {
+        producto.stock += Number(venta.cantidad);
+        DB.set("productos", productos);
+
+        // Al cancelar una venta, entra nuevamente stock al inventario
+        registrarMovimiento(
+            "ENTRADA",
+            producto.nombre,
+            venta.cantidad,
+            "Devolución por cancelación de venta"
+        );
+    }
+
+    sales = sales.filter(v => v.id !== id);
     DB.set("ventas", sales);
 
+    cargarProductosVenta();
     renderSales();
 }
 
