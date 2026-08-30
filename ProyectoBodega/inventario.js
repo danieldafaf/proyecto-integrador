@@ -76,9 +76,7 @@ function saveProduct(evento) {
     if (datos.maximo < datos.minimo) return alert("El stock máximo debe ser mayor o igual al stock mínimo.");
     if (datos.stock < 0 || datos.minimo < 0 || datos.maximo < 0 || datos.precio < 0) return alert("Los valores numéricos no pueden ser negativos.");
     const id = productId.value;
-    console.log("ID actual:", id);
-    console.log("Código ingresado:", datos.codigo);
-    console.table(productos);
+    
     if (productos.some(p => p.codigo === datos.codigo && p.id !== id)) return alert("Ese código ya existe.");
 
     if (id) {
@@ -87,7 +85,8 @@ function saveProduct(evento) {
     } else {
         const nuevo = { id: uid(), ...datos };
         productos.push(nuevo);
-//        registrarMovimiento("ENTRADA", nuevo.nombre, nuevo.stock, "Registro inicial del producto");
+        // Habilitado para registrar entradas al crear productos
+        registrarMovimiento("ENTRADA", nuevo.nombre, nuevo.stock, "Registro inicial del producto");
     }
     DB.set("productos", productos);
     closeProduct();
@@ -99,7 +98,12 @@ function deleteProduct(id) {
     const producto = productos.find(p => p.id === id);
     productos = productos.filter(p => p.id !== id);
     DB.set("productos", productos);
-    if (producto) registrarMovimiento("ELIMINACIÓN", producto.nombre, producto.stock, "Producto eliminado");
+    
+    // Registra como ELIMINACIÓN en el historial de movimientos
+    if (producto) {
+        registrarMovimiento("ELIMINACIÓN", producto.nombre, producto.stock, "Producto eliminado del inventario");
+    }
+    
     renderInventory();
 }
 
