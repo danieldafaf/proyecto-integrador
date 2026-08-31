@@ -88,7 +88,7 @@ function initLogin() {
     if (!formulario) return;
     formulario.addEventListener("submit", evento => {
         evento.preventDefault();
-        sessionStorage.setItem("usuarioActivo", "Invitado");
+        sessionStorage.setItem("usuarioActivo", "Usuario");
         location.href = "menu.html";
     });
 }

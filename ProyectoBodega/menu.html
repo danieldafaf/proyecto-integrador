@@ -12,9 +12,10 @@
 
     <header class="topbar">
         <div>
-            <span class="brand-tag">BODEGA · REG. 04</span>
+            <span class="brand-tag">N.A.O</span>
             <h1 class="brand-title">Panel principal</h1>
         </div>
+        
         <div class="top-actions">
             <nav class="nav">
                 <a href="menu.html" class="active">Menú</a>
@@ -39,6 +40,29 @@
             <span class="mono" id="welcome"></span>
         </section>
 
+            <section class="stats-grid">
+        <div class="stat-card">
+            <h3 id="totalProductos">0</h3>
+            <p>Productos</p>
+        </div>
+
+        <div class="stat-card">
+            <h3 id="totalVentas">0</h3>
+            <p>Ventas</p>
+        </div>
+
+        <div class="stat-card">
+            <h3 id="totalCompras">0</h3>
+            <p>Compras</p>
+        </div>
+
+        <div class="stat-card">
+            <h3 id="stockBajo">0</h3>
+            <p>Stock Bajo</p>
+        </div>
+    </section>
+
+
         <section class="menu-grid">
             <a class="card menu-card" href="clientes.html">
                 <span class="num">01</span>
@@ -55,7 +79,7 @@
             <a class="card menu-card" href="inventario.html">
                 <span class="num">03</span>
                 <h3>Inventario</h3>
-                <p>Administra baterías, existencias, precios y alertas de stock.</p>
+                <p>Administra productos, existencias, precios y alertas de stock.</p>
             </a>
 
             <a class="card menu-card" href="compras.html">
@@ -73,17 +97,80 @@
             <a class="card menu-card" href="proyeccion.html">
                 <span class="num">06</span>
                 <h3>Proyección</h3>
-                <p>Estima las ventas futuras basadas en datos históricos.</p>
+                <p>Visualiza proyecciones del inventario y estima posibles fechas de agotamiento.</p>
             </a>
         </section>
     </main>
-
+    
 
     <script src="app.js"></script>
     <script>
-        requireSession();
-        document.getElementById('welcome').textContent =
-            'USUARIO: ' + sessionStorage.getItem('usuarioActivo').toUpperCase();
+
+requireSession();
+
+const usuario =
+    sessionStorage.getItem("usuarioActivo") || "Usuario";
+
+const hora = new Date().getHours();
+
+let saludo = "Bienvenido";
+
+if (hora < 12) {
+    saludo = "Buenos días";
+} else if (hora < 18) {
+    saludo = "Buenas tardes";
+} else {
+    saludo = "Buenas noches";
+}
+
+document.getElementById("welcome").textContent =
+    `${saludo}, ${usuario}`;
+
+const productos = DB.get("productos", []);
+const compras = DB.get("compras", []);
+const ventas = DB.get("ventas", []);
+
+const total = productos.reduce(
+    (s, p) => s + Number(p.stock || 0),
+    0
+);
+
+document.querySelector(".hero p").textContent =
+    `Actualmente existen ${total} unidades registradas en el inventario.`;
+
+document.getElementById("totalProductos").textContent =
+    productos.length;
+
+document.getElementById("totalCompras").textContent =
+    compras.length;
+
+document.getElementById("totalVentas").textContent =
+    ventas.length;
+
+const stockBajo = productos.filter(
+    p => Number(p.stock) <= 5
+);
+
+document.getElementById("stockBajo").textContent =
+    stockBajo.length;
+
+document.querySelectorAll(".menu-card")
+.forEach((card, index) => {
+
+    card.style.opacity = "0";
+    card.style.transform = "translateY(20px)";
+
+    setTimeout(() => {
+
+        card.style.transition = "all .5s ease";
+        card.style.opacity = "1";
+        card.style.transform = "translateY(0)";
+
+    }, index * 100);
+
+});
+
     </script>
 </body>
 </html>
+
