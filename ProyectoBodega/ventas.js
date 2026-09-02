@@ -1,21 +1,26 @@
 let sales = [];
 
+// Inicializa el módulo de ventas
 function initSales() {
-    requireSession();
+    requireSession(); // Verifica que exista una sesión activa
 
+    // Carga las ventas almacenadas
     sales = DB.get("ventas", []);
 
+    // Eventos de búsqueda, formulario y cálculo automático
     saleSearch.addEventListener("input", renderSales);
     saleForm.addEventListener("submit", saveSale);
     cantidadVenta.addEventListener("input", previewTotal);
     precioVenta.addEventListener("input", previewTotal);
-    
+
+    // Actualiza el precio al seleccionar un producto
     productoVenta.addEventListener("change", actualizarPrecioVenta);
 
     cargarProductosVenta();
     renderSales();
 }
 
+// Carga los productos disponibles en el selector
 function cargarProductosVenta() {
     const productos = DB.get("productos", []);
 
@@ -31,6 +36,7 @@ function cargarProductosVenta() {
             .join("");
 }
 
+// Coloca automáticamente el precio del producto seleccionado
 function actualizarPrecioVenta() {
     const producto = DB.get("productos", []).find(
         p => p.id === productoVenta.value
@@ -45,6 +51,7 @@ function actualizarPrecioVenta() {
     previewTotal();
 }
 
+// Calcula y muestra el total de la venta
 function previewTotal() {
     totalPreview.textContent = money(
         Number(cantidadVenta.value) *
@@ -52,16 +59,19 @@ function previewTotal() {
     );
 }
 
+// Abre el formulario para registrar o editar una venta
 function openSale(id = "") {
     saleForm.reset();
     saleId.value = "";
 
+    // Coloca la fecha actual por defecto
     fecha.value = new Date().toISOString().slice(0, 10);
 
     cargarProductosVenta();
 
     saleTitle.textContent = "Nueva salida / venta";
 
+    // Si existe ID carga los datos para edición
     if (id) {
         const venta = sales.find(v => v.id === id);
 
@@ -82,19 +92,23 @@ function openSale(id = "") {
     modal("saleModal", true);
 }
 
+// Cierra el formulario modal
 function closeSale() {
     modal("saleModal", false);
 }
 
+// Guarda una venta nueva o modifica una existente
 function saveSale(evento) {
     evento.preventDefault();
 
+    // Valida la cédula
     if (!validCedula(cedulaCliente.value)) {
         return alert("La cédula debe contener 10 números.");
     }
-    
+
     const clientes = DB.get("clientes", []);
 
+    // Verifica que el cliente exista
     const clienteExiste = clientes.find(
         c => c.cedula === cedulaCliente.value.trim()
     );
@@ -102,8 +116,9 @@ function saveSale(evento) {
     if (!clienteExiste) {
         return alert("El cliente no está registrado.");
     }
-    
+
     const productos = DB.get("productos", []);
+
     const producto = productos.find(
         p => p.id === productoVenta.value
     );
@@ -111,6 +126,7 @@ function saveSale(evento) {
     const cantidad = Number(cantidadVenta.value);
     const precio = Number(precioVenta.value);
 
+    // Validaciones
     if (!producto) {
         return alert("Seleccione un producto.");
     }
@@ -121,12 +137,14 @@ function saveSale(evento) {
 
     const id = saleId.value;
 
+    // Verifica disponibilidad de stock
     if (!id && cantidad > Number(producto.stock)) {
         return alert(
             `Stock insuficiente. Disponible: ${producto.stock}`
         );
     }
 
+    // Datos de la venta
     const datos = {
         fecha: fecha.value,
         cedula: cedulaCliente.value.trim(),
@@ -137,21 +155,23 @@ function saveSale(evento) {
     };
 
     if (id) {
-        // Al editar una venta existente
+        // Edita una venta existente
         const existente = sales.find(v => v.id === id);
         Object.assign(existente, datos);
     } else {
-        // Al registrar una nueva venta (SALIDA)
+
+        // Descuenta stock del producto vendido
         producto.stock -= cantidad;
 
         DB.set("productos", productos);
 
+        // Registra la venta
         sales.push({
             id: uid(),
             ...datos
         });
 
-        // Registrar el movimiento de SALIDA
+        // Registra el movimiento de salida
         registrarMovimiento(
             "SALIDA",
             producto.nombre,
@@ -167,10 +187,13 @@ function saveSale(evento) {
     renderSales();
 }
 
+// Elimina una venta y devuelve el stock al inventario
 function deleteSale(id) {
     const venta = sales.find(v => v.id === id);
+
     if (!venta) return;
 
+    // Solicita confirmación
     if (
         !confirm(
             "¿Desea eliminar esta venta? Se devolverá el stock al inventario y se registrará la devolución."
@@ -179,15 +202,19 @@ function deleteSale(id) {
         return;
     }
 
-    // CORRECCIÓN 2: Revertir stock en inventario y registrar movimiento de devolución
     const productos = DB.get("productos", []);
-    const producto = productos.find(p => p.id === venta.productoId);
 
+    const producto = productos.find(
+        p => p.id === venta.productoId
+    );
+
+    // Devuelve el stock al inventario
     if (producto) {
         producto.stock += Number(venta.cantidad);
+
         DB.set("productos", productos);
 
-        // Al cancelar una venta, entra nuevamente stock al inventario
+        // Registra el ingreso por devolución
         registrarMovimiento(
             "ENTRADA",
             producto.nombre,
@@ -196,24 +223,29 @@ function deleteSale(id) {
         );
     }
 
+    // Elimina la venta
     sales = sales.filter(v => v.id !== id);
+
     DB.set("ventas", sales);
 
     cargarProductosVenta();
     renderSales();
 }
 
+// Muestra las ventas en la tabla
 function renderSales() {
     const busqueda = saleSearch.value
         .trim()
         .toLowerCase();
 
+    // Filtra ventas según búsqueda
     const filtradas = sales.filter(v =>
         `${v.fecha} ${v.cedula} ${v.producto || v.marca}`
             .toLowerCase()
             .includes(busqueda)
     );
 
+    // Genera las filas de la tabla
     saleBody.innerHTML = filtradas
         .map(
             v => `
@@ -244,9 +276,11 @@ function renderSales() {
         )
         .join("");
 
+    // Muestra mensaje si no existen ventas
     saleEmpty.style.display =
         filtradas.length ? "none" : "block";
 
+    // Estadísticas generales
     salesN.textContent = sales.length;
 
     salesUnits.textContent = sales.reduce(
@@ -254,6 +288,7 @@ function renderSales() {
         0
     );
 
+    // Calcula ingresos totales
     const ingresos = sales.reduce(
         (t, v) =>
             t +
@@ -264,16 +299,19 @@ function renderSales() {
 
     salesIncome.textContent = money(ingresos);
 
+    // Calcula promedio por venta
     salesAvg.textContent = money(
         sales.length
             ? ingresos / sales.length
             : 0
     );
 
+    // Actualiza contador de registros
     saleCount.textContent =
         `${filtradas.length} de ${sales.length} ventas`;
 }
 
+// Ejecuta la inicialización cuando la página carga
 document.addEventListener(
     "DOMContentLoaded",
     initSales

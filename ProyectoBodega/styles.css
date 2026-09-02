@@ -691,3 +691,57 @@ tbody tr:hover{
     color: transparent;
     -webkit-text-fill-color: transparent;
 }
+body::before{
+    content:"";
+    position:fixed;
+    width:500px;
+    height:500px;
+    background:rgba(79,70,229,.25);
+    border-radius:50%;
+    filter:blur(120px);
+    top:-100px;
+    left:-100px;
+    z-index:-1;
+}
+
+body::after{
+    content:"";
+    position:fixed;
+    width:400px;
+    height:400px;
+    background:rgba(37,99,235,.2);
+    border-radius:50%;
+    filter:blur(100px);
+    bottom:-100px;
+    right:-100px;
+    z-index:-1;
+}
+.login-card{
+    animation: aparecer .8s ease;
+}
+
+@keyframes aparecer{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+.version{
+    display:block;
+    text-align:center;
+    margin-top:15px;
+    color:var(--text-muted);
+}
+.features{
+    margin:20px 0;
+    color:var(--text-muted);
+    font-size:.95rem;
+}
+
+.features p{
+    margin:8px 0;
+}
