@@ -1,5 +1,7 @@
-/* CSS optimizado: eliminadas variables redundantes sin afectar estilos */
+/* ProyectoBodega */
 
+
+/* colores, sombras y estilos globales */
 :root{
     --bg: #0f172a;
     --surface: #1e293b;
@@ -32,6 +34,7 @@
     --shadow:
         0 10px 30px rgba(0,0,0,.25);
 }
+/* Estilo base para todo el documento */
 
 * {
     box-sizing: border-box;
@@ -60,6 +63,7 @@ input,
 select {
     font: inherit;
 }
+/* Estilos para la barra superior y navegación */
 
 .topbar {
     position: sticky;
@@ -111,6 +115,8 @@ select {
     color: #ffffff;
     background: var(--accent);
 }
+
+/* Estilos para botones, formularios y tablas */
 
 .btn {
     padding: 10px 15px;
@@ -166,6 +172,8 @@ select {
     margin-bottom: 20px;
 }
 
+/* Estilos para tarjetas, estadísticas y tablas */
+
 .card {
     background: linear-gradient(
         145deg,
@@ -208,6 +216,8 @@ select {
     margin-bottom: 14px;
 }
 
+/* Estilos para formularios y modales */
+
 .input {
     width: 100%;
     padding: 11px 12px;
@@ -233,6 +243,8 @@ select {
 .tablewrap {
     overflow: auto;
 }
+
+/* Estilos para tablas */
 
 .tbl {
     width: 100%;
@@ -314,6 +326,8 @@ select {
     color: var(--muted);
     font-size: 0.82rem;
 }
+
+/* Estilos para modales y superposiciones */
 
 .overlay {
     position: fixed;
@@ -425,6 +439,8 @@ select {
     margin-top: 8px;
 }
 
+/* Estilos para el menú de opciones */
+
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -459,6 +475,8 @@ select {
     color: var(--muted);
     line-height: 1.5;
 }
+
+/* diseño responsivo para pantallas pequeñas */
 
 @media (max-width: 800px) {
 
@@ -496,6 +514,8 @@ select {
         width: 94vw;
     }
 }
+
+/* proyeccion de inventario*/
 .card-proyeccion {
     padding: 20px;
 }
@@ -693,6 +713,9 @@ tbody tr:hover{
     color: transparent;
     -webkit-text-fill-color: transparent;
 }
+
+/* efectos de fondo y animaciones */
+
 body::before{
     content:"";
     position:fixed;
@@ -721,6 +744,8 @@ body::after{
 .login-card{
     animation: aparecer .8s ease;
 }
+
+/* animacion */
 
 @keyframes aparecer{
     from{

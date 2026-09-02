@@ -1,112 +1,158 @@
-<!doctype html>
-<html lang="es">
-<head>
-    <title>Clientes - Almacén</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+<!doctype html> 
+<html lang="es"> 
+<head> 
+    <!-- Título mostrado en la pestaña del navegador -->
+    <title>Clientes - Almacén</title> 
 
-    <header class="topbar">
-        <div>
-            <span class="brand-tag">N.A.O</span>
-            <h1 class="brand-title">Gestión de clientes</h1>
-        </div>
-        <div class="top-actions">
-            <nav class="nav">
-                <a href="menu.html">Menú</a>
-                <a href="clientes.html" class="active">Clientes</a>
-                <a href="ventas.html">Ventas</a>
-                <a href="inventario.html">Inventario</a>
-                <a href="compras.html">Compras</a>
-                <a href="movimientos.html">Movimientos</a>
-                <a href="proyeccion.html">Proyección</a>
-            </nav>
-            <button class="btn" onclick="logout()">Cerrar sesión</button>
-        </div>
-    </header>
+    <!-- Configuración de caracteres y diseño responsivo -->
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"> 
 
-    <main class="container">
-        <!-- Hero -->
-        <section class="hero">
-            <div>
-                <h2>Clientes registrados</h2>
-                <p>Los datos permanecen guardados en este navegador.</p>
-            </div>
-            <button class="btn btn-primary" onclick="openClient()">+ Nuevo cliente</button>
-        </section>
+    <!-- Hoja de estilos principal del sistema -->
+    <link rel="stylesheet" href="styles.css"> 
+</head> 
 
-        <section class="card toolbar">
-            <input class="input" id="clientSearch" placeholder="Buscar por nombre o cédula…">
-        </section>
+<body> 
 
-        <section class="card tablewrap">
-            <table class="tbl">
-                <thead>
-                    <tr>
-                        <th>Cédula</th>
-                        <th>Nombre</th>
-                        <th>Teléfono</th>
-                        <th>Correo</th>
-                        <th>Dirección</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="clientBody"></tbody>
-            </table>
-            <div class="empty" id="clientEmpty">No hay clientes registrados.</div>
-        </section>
+    <!-- Barra superior de navegación -->
+    <header class="topbar"> 
+        <div> 
+            <!-- Nombre o identificador del sistema -->
+            <span class="brand-tag">N.A.O</span> 
 
-        <footer class="foot">
-            <span id="clientCount"></span>
-        </footer>
-    </main>
+            <!-- Título de la página actual -->
+            <h1 class="brand-title">Gestión de clientes</h1> 
+        </div> 
 
-    <div class="overlay" id="clientModal" hidden>
-        <section class="modal">
-            <div class="modal-head">
-                <h3 id="clientTitle">Nuevo cliente</h3>
-                <button class="close" onclick="closeClient()">✕</button>
-            </div>
+        <div class="top-actions"> 
 
-            <form class="form" id="clientForm">
-                <input type="hidden" id="clientId">
+            <!-- Menú de navegación entre módulos -->
+            <nav class="nav"> 
+                <a href="menu.html">Menú</a> 
+                <a href="clientes.html" class="active">Clientes</a> 
+                <a href="ventas.html">Ventas</a> 
+                <a href="inventario.html">Inventario</a> 
+                <a href="compras.html">Compras</a> 
+                <a href="movimientos.html">Movimientos</a> 
+                <a href="proyeccion.html">Proyección</a> 
+            </nav> 
 
-                <div class="grid2">
-                    <div class="field">
-                        <label>Cédula</label>
-                        <input class="input" id="cedula" maxlength="10" required>
-                    </div>
-                    <div class="field">
-                        <label>Nombre completo</label>
-                        <input class="input" id="nombre" required>
-                    </div>
-                    <div class="field">
-                        <label>Teléfono</label>
-                        <input class="input" id="telefono" maxlength="10" required>
-                    </div>
-                    <div class="field">
-                        <label>Correo</label>
-                        <input class="input" id="correo" type="email" required>
-                    </div>
-                </div>
+            <!-- Botón para cerrar la sesión del usuario -->
+            <button class="btn" onclick="logout()">Cerrar sesión</button> 
+        </div> 
+    </header> 
 
-                <div class="field">
-                    <label>Dirección</label>
-                    <input class="input" id="direccion" required>
-                </div>
+    <!-- Contenedor principal de la página -->
+    <main class="container"> 
 
-                <div class="form-actions">
-                    <button type="button" class="btn" onclick="closeClient()">Cancelar</button>
-                    <button class="btn btn-primary">Guardar cliente</button>
-                </div>
-            </form>
-        </section>
-    </div>
+        <!-- Sección de presentación de la página -->
+        <section class="hero"> 
+            <div> 
+                <h2>Clientes registrados</h2> 
+                <p>Los datos permanecen guardados en este navegador.</p> 
+            </div> 
 
-    <script src="app.js"></script>
-    <script src="clientes.js"></script>
-    <script>initClients()</script>
-</body>
+            <!-- Botón para abrir el formulario de registro -->
+            <button class="btn btn-primary" onclick="openClient()">+ Nuevo cliente</button> 
+        </section> 
+
+        <!-- Barra de búsqueda de clientes -->
+        <section class="card toolbar"> 
+            <input class="input" id="clientSearch" placeholder="Buscar por nombre o cédula…"> 
+        </section> 
+
+        <!-- Tabla donde se muestran los clientes registrados -->
+        <section class="card tablewrap"> 
+            <table class="tbl"> 
+                <thead> 
+                    <tr> 
+                        <th>Cédula</th> 
+                        <th>Nombre</th> 
+                        <th>Teléfono</th> 
+                        <th>Correo</th> 
+                        <th>Dirección</th> 
+                        <th>Acciones</th> 
+                    </tr> 
+                </thead> 
+
+                <!-- Cuerpo de la tabla generado dinámicamente con JavaScript -->
+                <tbody id="clientBody"></tbody> 
+            </table> 
+
+            <!-- Mensaje mostrado cuando no existen clientes -->
+            <div class="empty" id="clientEmpty">No hay clientes registrados.</div> 
+        </section> 
+
+        <!-- Pie de página con contador de registros -->
+        <footer class="foot"> 
+            <span id="clientCount"></span> 
+        </footer> 
+    </main> 
+
+    <!-- Ventana modal para registrar o editar clientes -->
+    <div class="overlay" id="clientModal" hidden> 
+        <section class="modal"> 
+
+            <!-- Encabezado del modal -->
+            <div class="modal-head"> 
+                <h3 id="clientTitle">Nuevo cliente</h3> 
+
+                <!-- Botón para cerrar el formulario -->
+                <button class="close" onclick="closeClient()">✕</button> 
+            </div> 
+
+            <!-- Formulario de registro y edición de clientes -->
+            <form class="form" id="clientForm"> 
+
+                <!-- Campo oculto para almacenar el ID del cliente -->
+                <input type="hidden" id="clientId"> 
+
+                <!-- Datos principales del cliente -->
+                <div class="grid2"> 
+                    <div class="field"> 
+                        <label>Cédula</label> 
+                        <input class="input" id="cedula" maxlength="10" required> 
+                    </div> 
+
+                    <div class="field"> 
+                        <label>Nombre completo</label> 
+                        <input class="input" id="nombre" required> 
+                    </div> 
+
+                    <div class="field"> 
+                        <label>Teléfono</label> 
+                        <input class="input" id="telefono" maxlength="10" required> 
+                    </div> 
+
+                    <div class="field"> 
+                        <label>Correo</label> 
+                        <input class="input" id="correo" type="email" required> 
+                    </div> 
+                </div> 
+
+                <!-- Campo para la dirección del cliente -->
+                <div class="field"> 
+                    <label>Dirección</label> 
+                    <input class="input" id="direccion" required> 
+                </div> 
+
+                <!-- Botones de acción del formulario -->
+                <div class="form-actions"> 
+                    <button type="button" class="btn" onclick="closeClient()">Cancelar</button> 
+                    <button class="btn btn-primary">Guardar cliente</button> 
+                </div> 
+            </form> 
+        </section> 
+    </div> 
+
+    <!-- Archivo con funciones generales del sistema -->
+    <script src="app.js"></script> 
+
+    <!-- Archivo con la lógica de gestión de clientes -->
+    <script src="clientes.js"></script> 
+
+    <!-- Inicialización del módulo de clientes -->
+    <script>initClients()</script> 
+
+</body> 
 </html>
