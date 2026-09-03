@@ -1,14 +1,10 @@
 <!doctype html> 
 <html lang="es"> 
 <head> 
-    <!-- Título mostrado en la pestaña del navegador -->
     <title>Clientes - Almacén</title> 
 
-    <!-- Configuración de caracteres y diseño responsivo -->
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width,initial-scale=1.0"> 
-
-    <!-- Hoja de estilos principal del sistema -->
     <link rel="stylesheet" href="styles.css"> 
 </head> 
 
@@ -17,10 +13,7 @@
     <!-- Barra superior de navegación -->
     <header class="topbar"> 
         <div> 
-            <!-- Nombre o identificador del sistema -->
             <span class="brand-tag">N.A.O</span> 
-
-            <!-- Título de la página actual -->
             <h1 class="brand-title">Gestión de clientes</h1> 
         </div> 
 
@@ -75,7 +68,6 @@
                     </tr> 
                 </thead> 
 
-                <!-- Cuerpo de la tabla generado dinámicamente con JavaScript -->
                 <tbody id="clientBody"></tbody> 
             </table> 
 
@@ -83,7 +75,6 @@
             <div class="empty" id="clientEmpty">No hay clientes registrados.</div> 
         </section> 
 
-        <!-- Pie de página con contador de registros -->
         <footer class="foot"> 
             <span id="clientCount"></span> 
         </footer> 
@@ -145,13 +136,10 @@
         </section> 
     </div> 
 
-    <!-- Archivo con funciones generales del sistema -->
     <script src="app.js"></script> 
 
-    <!-- Archivo con la lógica de gestión de clientes -->
     <script src="clientes.js"></script> 
 
-    <!-- Inicialización del módulo de clientes -->
     <script>initClients()</script> 
 
 </body> 

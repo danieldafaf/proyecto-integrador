@@ -1,19 +1,25 @@
 <!doctype html>
 <html lang="es">
 <head>
+
+    <!-- Configuración general de la página -->
     <title>Ventas - Almacén</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    
+
+    <!-- Hoja de estilos principal -->
     <link rel="stylesheet" href="styles.css">
+
 </head>
 <body>
-    <!-- Encabezado -->
+
+    <!-- Barra superior de navegación -->
     <header class="topbar">
         <div>
             <span class="brand-tag">N.A.O</span>
             <h1 class="brand-title">Registro de ventas</h1>
         </div>
+
         <div class="top-actions">
             <nav class="nav">
                 <a href="menu.html">Menú</a>
@@ -24,48 +30,67 @@
                 <a href="movimientos.html">Movimientos</a>
                 <a href="proyeccion.html">Proyección</a>
             </nav>
-            <button class="btn" onclick="logout()">Cerrar sesión</button>
+
+            <button class="btn" onclick="logout()">
+                Cerrar sesión
+            </button>
         </div>
     </header>
 
-    <!-- Contenido principal -->
+    <!-- Contenido principal del módulo de ventas -->
     <main class="container">
-        <!-- Hero -->
+
+        <!-- Encabezado informativo y acceso al registro de ventas -->
         <section class="hero">
             <div>
                 <h2>Salidas y ventas</h2>
-                <p>Registra salidas de productos y actualiza automáticamente el stock.</p>
+                <p>
+                    Registra salidas de productos y actualiza automáticamente el stock.
+                </p>
             </div>
-            <button class="btn btn-primary" onclick="openSale()">+ Nueva venta</button>
+
+            <button class="btn btn-primary" onclick="openSale()">
+                + Nueva venta
+            </button>
         </section>
 
-        <!-- Estadísticas -->
+        <!-- Indicadores estadísticos de ventas -->
         <section class="stats">
+
             <div class="card stat">
                 <small>Ventas</small>
                 <strong id="salesN">0</strong>
             </div>
+
             <div class="card stat">
                 <small>Unidades vendidas</small>
                 <strong id="salesUnits">0</strong>
             </div>
+
             <div class="card stat">
                 <small>Ingresos</small>
                 <strong id="salesIncome">$0.00</strong>
             </div>
+
             <div class="card stat warn">
                 <small>Promedio por venta</small>
                 <strong id="salesAvg">$0.00</strong>
             </div>
+
         </section>
 
-        <!-- Barra de búsqueda -->
+        <!-- Barra para búsqueda rápida de ventas -->
         <section class="card toolbar">
-            <input class="input" id="saleSearch" placeholder="Buscar cédula, producto o fecha…">
+            <input
+                class="input"
+                id="saleSearch"
+                placeholder="Buscar cédula, producto o fecha…"
+            >
         </section>
 
-        <!-- Tabla de ventas -->
+        <!-- Tabla con el historial de ventas registradas -->
         <section class="card tablewrap">
+
             <table class="tbl">
                 <thead>
                     <tr>
@@ -78,50 +103,113 @@
                         <th>Acciones</th>
                     </tr>
                 </thead>
+
                 <tbody id="saleBody"></tbody>
             </table>
-            <div class="empty" id="saleEmpty">No hay ventas registradas.</div>
+
+            <div class="empty" id="saleEmpty">
+                No hay ventas registradas.
+            </div>
+
         </section>
 
-        <!-- Pie -->
+        <!-- Información adicional del módulo -->
         <footer class="foot">
             <span id="saleCount"></span>
-            <span>Los movimientos se guardan en el historial del sistema.</span>
+            <span>
+                Los movimientos se guardan en el historial del sistema.
+            </span>
         </footer>
+
     </main>
 
-    <!-- Modal de venta -->
+    <!-- Ventana modal para registrar o editar ventas -->
     <div class="overlay" id="saleModal" hidden>
+
         <section class="modal">
+
             <div class="modal-head">
                 <h3 id="saleTitle">Nueva venta</h3>
-                <button class="close" onclick="closeSale()">✕</button>
-            </div>
-            
-            <form class="form" id="saleForm">
-                <input type="hidden" id="saleId">
-                
-                <div class="grid2">
-                    <div class="field"><label>Fecha</label><input class="input" id="fecha" type="date" required></div>
-                    <div class="field"><label>Cédula del cliente</label><input class="input" id="cedulaCliente" maxlength="10" required></div>
-                    <div class="field"><label>Producto</label><select class="input" id="productoVenta" required onchange="actualizarPrecioVenta()"></select></div>
-                    <div class="field"><label>Cantidad</label><input class="input" id="cantidadVenta" type="number" min="1" required></div>
-                    <div class="field"><label>Precio unitario ($)</label><input class="input" id="precioVenta" type="number" min="0" step="0.01" required></div>
-                </div>
-                
-                <div class="notice">
-                    Total calculado: <strong id="totalPreview">$0.00</strong>
-                </div>
-                
-                <div class="form-actions">
-                    <button type="button" class="btn" onclick="closeSale()">Cancelar</button>
-                    <button class="btn btn-primary">Guardar venta</button>
-</div>
-</form>
-</section>
-</div>
 
+                <button class="close" onclick="closeSale()">
+                    ✕
+                </button>
+            </div>
+
+            <!-- Formulario de registro de ventas -->
+            <form class="form" id="saleForm">
+
+                <input type="hidden" id="saleId">
+
+                <div class="grid2">
+
+                    <div class="field">
+                        <label>Fecha</label>
+                        <input class="input" id="fecha" type="date" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Cédula del cliente</label>
+                        <input class="input" id="cedulaCliente" maxlength="10" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Producto</label>
+                        <select
+                            class="input"
+                            id="productoVenta"
+                            required
+                            onchange="actualizarPrecioVenta()">
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Cantidad</label>
+                        <input class="input" id="cantidadVenta" type="number" min="1" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Precio unitario ($)</label>
+                        <input
+                            class="input"
+                            id="precioVenta"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            required>
+                    </div>
+
+                </div>
+
+                <!-- Vista previa del valor total de la venta -->
+                <div class="notice">
+                    Total calculado:
+                    <strong id="totalPreview">$0.00</strong>
+                </div>
+
+                <!-- Botones de acción del formulario -->
+                <div class="form-actions">
+                    <button
+                        type="button"
+                        class="btn"
+                        onclick="closeSale()">
+                        Cancelar
+                    </button>
+
+                    <button class="btn btn-primary">
+                        Guardar venta
+                    </button>
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
+
+    <!-- Scripts necesarios para la lógica del módulo -->
     <script src="app.js"></script>
     <script src="ventas.js"></script>
+
 </body>
 </html>

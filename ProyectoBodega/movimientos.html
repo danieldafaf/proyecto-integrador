@@ -2,39 +2,73 @@
 <html lang="es">
 
 <head>
+    
     <title>Movimientos - Bodega</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+
+    <!-- Barra superior de navegación -->
     <header class="topbar">
-        <div><span class="brand-tag">BODEGA · CONTROL</span>
+        <div>
+            <span class="brand-tag">BODEGA · CONTROL</span>
             <h1 class="brand-title">Historial de movimientos</h1>
         </div>
+
         <div class="top-actions">
-            <nav class="nav"><a href="menu.html">Menú</a><a href="inventario.html">Inventario</a><a
-                    href="compras.html">Compras</a><a href="movimientos.html" class="active">Movimientos</a><a
-                    href="proyeccion.html">Proyección</a></nav><button class="btn" onclick="logout()">Cerrar
-                sesión</button>
+            <nav class="nav">
+                <a href="menu.html">Menú</a>
+                <a href="inventario.html">Inventario</a>
+                <a href="compras.html">Compras</a>
+                <a href="movimientos.html" class="active">Movimientos</a>
+                <a href="proyeccion.html">Proyección</a>
+            </nav>
+
+            <button class="btn" onclick="logout()">
+                Cerrar sesión
+            </button>
         </div>
     </header>
+
+    <!-- Contenido principal -->
     <main class="container">
+
+        <!-- Encabezado informativo del módulo -->
         <section class="hero">
             <div>
                 <h2>Historial</h2>
-                <p>Consulta las entradas, salidas y cambios realizados en el inventario.</p>
+                <p>
+                    Consulta las entradas, salidas y cambios realizados en el inventario.
+                </p>
             </div>
         </section>
-        <section class="card toolbar"><input class="input" id="movSearch"
-                placeholder="Buscar producto, usuario o tipo…"><select class="input" id="movTipo">
+
+        <!-- Herramientas de búsqueda y filtrado -->
+        <section class="card toolbar">
+
+            <input
+                class="input"
+                id="movSearch"
+                placeholder="Buscar producto, usuario o tipo…"
+            >
+
+            <select class="input" id="movTipo">
                 <option value="">Todos los movimientos</option>
                 <option>ENTRADA</option>
                 <option>SALIDA</option>
                 <option>ELIMINACIÓN</option>
-            </select></section>
+            </select>
+
+        </section>
+
+        <!-- Tabla donde se muestran los movimientos registrados -->
         <section class="card tablewrap">
+
             <table class="tbl">
                 <thead>
                     <tr>
@@ -46,13 +80,23 @@
                         <th>Usuario</th>
                     </tr>
                 </thead>
+
                 <tbody id="movBody"></tbody>
             </table>
-            <div class="empty" id="movEmpty">No hay movimientos registrados.</div>
+
+            <!-- Mensaje mostrado cuando no existen registros -->
+            <div class="empty" id="movEmpty">
+                No hay movimientos registrados.
+            </div>
+
         </section>
+
     </main>
+
+    <!-- Scripts necesarios para el funcionamiento del módulo -->
     <script src="app.js"></script>
     <script src="movimientos.js"></script>
+
 </body>
 
 </html>

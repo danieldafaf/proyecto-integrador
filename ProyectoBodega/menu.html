@@ -1,15 +1,16 @@
 <!doctype html>
 <html lang="es">
 <head>
+   
     <title>Menú - Almacén</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-
 
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
+    <!-- Barra superior de navegación del sistema -->
     <header class="topbar">
         <div>
             <span class="brand-tag">N.A.O</span>
@@ -26,44 +27,50 @@
                 <a href="movimientos.html">Movimientos</a>
                 <a href="proyeccion.html">Proyección</a>
             </nav>
+
             <button class="btn" onclick="logout()">Cerrar sesión</button>
         </div>
     </header>
 
+    <!-- Contenedor principal del panel -->
     <main class="container">
-        <!-- Hero -->
+
+        <!-- Sección de bienvenida al usuario -->
         <section class="hero">
             <div>
                 <h2>Centro de operaciones</h2>
                 <p>Selecciona el módulo que necesitas administrar.</p>
             </div>
+
             <span class="mono" id="welcome"></span>
         </section>
 
-            <section class="stats-grid">
-        <div class="stat-card">
-            <h3 id="totalProductos">0</h3>
-            <p>Productos</p>
-        </div>
+        <!-- Tarjetas con indicadores generales del sistema -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3 id="totalProductos">0</h3>
+                <p>Productos</p>
+            </div>
 
-        <div class="stat-card">
-            <h3 id="totalVentas">0</h3>
-            <p>Ventas</p>
-        </div>
+            <div class="stat-card">
+                <h3 id="totalVentas">0</h3>
+                <p>Ventas</p>
+            </div>
 
-        <div class="stat-card">
-            <h3 id="totalCompras">0</h3>
-            <p>Compras</p>
-        </div>
+            <div class="stat-card">
+                <h3 id="totalCompras">0</h3>
+                <p>Compras</p>
+            </div>
 
-        <div class="stat-card">
-            <h3 id="stockBajo">0</h3>
-            <p>Stock Bajo</p>
-        </div>
-    </section>
+            <div class="stat-card">
+                <h3 id="stockBajo">0</h3>
+                <p>Stock Bajo</p>
+            </div>
+        </section>
 
-
+        <!-- Menú principal de acceso a los módulos -->
         <section class="menu-grid">
+
             <a class="card menu-card" href="clientes.html">
                 <span class="num">01</span>
                 <h3>Clientes</h3>
@@ -99,78 +106,86 @@
                 <h3>Proyección</h3>
                 <p>Visualiza proyecciones del inventario y estima posibles fechas de agotamiento.</p>
             </a>
+
         </section>
     </main>
-    
 
+    <!-- Carga de funciones generales del sistema -->
     <script src="app.js"></script>
+
     <script>
 
-requireSession();
+        /* Verificación de sesión activa */
+        requireSession();
 
-const usuario =
-    sessionStorage.getItem("usuarioActivo") || "Usuario";
+        /* Obtención del usuario y generación del saludo */
+        const usuario =
+            sessionStorage.getItem("usuarioActivo") || "Usuario";
 
-const hora = new Date().getHours();
+        const hora = new Date().getHours();
 
-let saludo = "Bienvenido";
+        let saludo = "Bienvenido";
 
-if (hora < 12) {
-    saludo = "Buenos días";
-} else if (hora < 18) {
-    saludo = "Buenas tardes";
-} else {
-    saludo = "Buenas noches";
-}
+        if (hora < 12) {
+            saludo = "Buenos días";
+        } else if (hora < 18) {
+            saludo = "Buenas tardes";
+        } else {
+            saludo = "Buenas noches";
+        }
 
-document.getElementById("welcome").textContent =
-    `${saludo}, ${usuario}`;
+        document.getElementById("welcome").textContent =
+            `${saludo}, ${usuario}`;
 
-const productos = DB.get("productos", []);
-const compras = DB.get("compras", []);
-const ventas = DB.get("ventas", []);
+        /* Obtención de información almacenada */
+        const productos = DB.get("productos", []);
+        const compras = DB.get("compras", []);
+        const ventas = DB.get("ventas", []);
 
-const total = productos.reduce(
-    (s, p) => s + Number(p.stock || 0),
-    0
-);
+        /* Cálculo de unidades totales en inventario */
+        const total = productos.reduce(
+            (s, p) => s + Number(p.stock || 0),
+            0
+        );
 
-document.querySelector(".hero p").textContent =
-    `Actualmente existen ${total} unidades registradas en el inventario.`;
+        document.querySelector(".hero p").textContent =
+            `Actualmente existen ${total} unidades registradas en el inventario.`;
 
-document.getElementById("totalProductos").textContent =
-    productos.length;
+        /* Actualización de indicadores estadísticos */
+        document.getElementById("totalProductos").textContent =
+            productos.length;
 
-document.getElementById("totalCompras").textContent =
-    compras.length;
+        document.getElementById("totalCompras").textContent =
+            compras.length;
 
-document.getElementById("totalVentas").textContent =
-    ventas.length;
+        document.getElementById("totalVentas").textContent =
+            ventas.length;
 
-const stockBajo = productos.filter(
-    p => Number(p.stock) <= 5
-);
+        /* Identificación de productos con stock bajo */
+        const stockBajo = productos.filter(
+            p => Number(p.stock) <= 5
+        );
 
-document.getElementById("stockBajo").textContent =
-    stockBajo.length;
+        document.getElementById("stockBajo").textContent =
+            stockBajo.length;
 
-document.querySelectorAll(".menu-card")
-.forEach((card, index) => {
+        /* Animación de aparición de las tarjetas del menú */
+        document.querySelectorAll(".menu-card")
+        .forEach((card, index) => {
 
-    card.style.opacity = "0";
-    card.style.transform = "translateY(20px)";
+            card.style.opacity = "0";
+            card.style.transform = "translateY(20px)";
 
-    setTimeout(() => {
+            setTimeout(() => {
 
-        card.style.transition = "all .5s ease";
-        card.style.opacity = "1";
-        card.style.transform = "translateY(0)";
+                card.style.transition = "all .5s ease";
+                card.style.opacity = "1";
+                card.style.transform = "translateY(0)";
 
-    }, index * 100);
+            }, index * 100);
 
-});
+        });
 
     </script>
 </body>
 </html>
-

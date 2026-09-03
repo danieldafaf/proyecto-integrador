@@ -2,6 +2,7 @@
 <html lang="es">
 
 <head>
+   
     <title>Inventario - Bodega</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
 
 <body>
 
+    <!-- Barra superior con navegación principal -->
     <header class="topbar">
         <div>
             <span class="brand-tag">N.A.O</span>
@@ -35,6 +37,7 @@
 
     <main class="container">
 
+        <!-- Encabezado de la sección y botón para agregar productos -->
         <section class="hero">
             <div>
                 <h2>Inventario general</h2>
@@ -48,6 +51,7 @@
             </button>
         </section>
 
+        <!-- Tarjetas con indicadores generales del inventario -->
         <section class="stats">
             <div class="card stat">
                 <small>Productos</small>
@@ -70,6 +74,7 @@
             </div>
         </section>
 
+        <!-- Herramientas de búsqueda y filtrado -->
         <section class="card toolbar">
             <input
                 class="input"
@@ -89,6 +94,7 @@
             </select>
         </section>
 
+        <!-- Tabla principal de productos registrados -->
         <section class="card tablewrap">
             <table class="tbl">
                 <thead>
@@ -113,6 +119,7 @@
             </div>
         </section>
 
+        <!-- Información complementaria del inventario -->
         <footer class="foot">
             <span id="invCount"></span>
             <span>Información almacenada localmente.</span>
@@ -120,6 +127,7 @@
 
     </main>
 
+    <!-- Ventana modal para registrar o editar productos -->
     <div class="overlay" id="productModal" hidden>
         <section class="modal">
 
@@ -128,6 +136,7 @@
                 <button class="close" onclick="closeProduct()">✕</button>
             </div>
 
+            <!-- Formulario de registro y actualización de productos -->
             <form class="form" id="productForm">
 
                 <input type="hidden" id="productId">
@@ -193,10 +202,12 @@
 
                 </div>
 
+                <!-- Mensaje informativo sobre el cálculo automático del estado -->
                 <div class="notice">
                     El estado se determina automáticamente según el stock mínimo.
                 </div>
 
+                <!-- Botones de acción del formulario -->
                 <div class="form-actions">
                     <button type="button" class="btn" onclick="closeProduct()">
                         Cancelar
@@ -212,6 +223,7 @@
         </section>
     </div>
 
+    <!-- Archivos JavaScript que controlan la lógica del sistema -->
     <script src="app.js"></script>
     <script src="inventario.js"></script>
 
