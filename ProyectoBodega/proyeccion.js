@@ -26,31 +26,22 @@ function calcularProyeccion() {
         m => m.tipo === "SALIDA"
     );
 
-    const hoy = new Date();
+ // Analiza únicamente los últimos 30 días
+const hace30Dias = new Date();
+hace30Dias.setDate(hace30Dias.getDate() - 30);
 
-    // Obtiene las fechas válidas de las salidas
-    const fechas = salidas
-        .map(m => new Date(m.fecha).getTime())
-        .filter(Number.isFinite);
+const salidasRecientes = salidas.filter(
+    m => new Date(m.fecha) >= hace30Dias
+);
 
-    // Determina el período de análisis en días
-    const diasAnalizados = fechas.length
-        ? Math.max(
-            1,
-            Math.ceil(
-                (hoy.getTime() - Math.min(...fechas)) / 86400000
-            )
-        )
-        : 30; // Si no hay datos utiliza 30 días por defecto
+// Total de unidades vendidas en los últimos 30 días
+const unidadesSalida = salidasRecientes.reduce(
+    (t, m) => t + Number(m.cantidad || 0),
+    0
+);
 
-    // Calcula el total de unidades que han salido
-    const unidadesSalida = salidas.reduce(
-        (t, m) => t + Number(m.cantidad || 0),
-        0
-    );
-
-    // Calcula el promedio de salida diaria
-    const promedio = unidadesSalida / diasAnalizados;
+// Promedio diario
+const promedio = unidadesSalida / 30;
 
     // Estima los días que durará el inventario
     const dias = promedio > 0 ? stock / promedio : 0;
@@ -85,11 +76,11 @@ function calcularProyeccion() {
         mensajeProyeccion.textContent =
             "Aún no existen suficientes salidas registradas para realizar una proyección basada en el comportamiento del inventario.";
     } else {
-        mensajeProyeccion.textContent =
-            `Actualmente existen ${Math.round(stock)} unidades. ` +
-            `La salida promedio estimada es de ${promedio.toFixed(2)} unidades por día, ` +
-            `por lo que se proyecta que el inventario podría agotarse en aproximadamente ${Math.ceil(dias)} días ` +
-            `si el ritmo de salida se mantiene constante.`;
+       mensajeProyeccion.textContent =
+    `Actualmente existen ${Math.round(stock)} unidades. ` +
+    `El promedio de venta es de ${promedio.toFixed(2)} unidades por día, ` +
+    `por lo que el inventario podría agotarse en aproximadamente ${Math.ceil(dias)} días ` +
+    `si el ritmo de salida se mantiene constante.`;
     }
 }
 
