@@ -316,3 +316,139 @@ document.addEventListener(
     "DOMContentLoaded",
     initSales
 );
+
+function exportarReporteVentasExcel() {
+
+    const ventas = DB.get("ventas", []);
+    const movimientos = DB.get("movimientos", []);
+
+    if (!ventas.length) {
+        return alert("No existen ventas registradas.");
+    }
+
+    const libro = XLSX.utils.book_new();
+
+    // HOJA 1 - RESUMEN
+
+    const totalVentas = ventas.length;
+
+    const unidadesVendidas = ventas.reduce(
+        (t, v) => t + Number(v.cantidad || 0),
+        0
+    );
+
+    const ingresos = ventas.reduce(
+        (t, v) =>
+            t +
+            Number(v.cantidad || 0) *
+            Number(v.precio || 0),
+        0
+    );
+
+    const promedio =
+        totalVentas > 0
+            ? ingresos / totalVentas
+            : 0;
+
+    const conteoProductos = {};
+
+    ventas.forEach(v => {
+        conteoProductos[v.producto] =
+            (conteoProductos[v.producto] || 0)
+            + Number(v.cantidad);
+    });
+
+    const productoMasVendido =
+        Object.keys(conteoProductos).length
+            ? Object.entries(conteoProductos)
+                .sort((a, b) => b[1] - a[1])[0][0]
+            : "N/A";
+
+    const resumen = [
+        {
+            Indicador: "Total de ventas",
+            Valor: totalVentas
+        },
+        {
+            Indicador: "Unidades vendidas",
+            Valor: unidadesVendidas
+        },
+        {
+            Indicador: "Ingresos generados",
+            Valor: ingresos.toFixed(2)
+        },
+        {
+            Indicador: "Promedio por venta",
+            Valor: promedio.toFixed(2)
+        },
+        {
+            Indicador: "Producto más vendido",
+            Valor: productoMasVendido
+        }
+    ];
+
+    const hojaResumen =
+        XLSX.utils.json_to_sheet(resumen);
+
+    XLSX.utils.book_append_sheet(
+        libro,
+        hojaResumen,
+        "Resumen"
+    );
+
+    // Detalle de ventas
+
+    const detalleVentas = ventas.map(v => ({
+        Fecha: v.fecha,
+        Cliente: v.cedula,
+        Producto: v.producto,
+        Cantidad: v.cantidad,
+        Precio: Number(v.precio).toFixed(2),
+        Total: (
+            Number(v.cantidad) *
+            Number(v.precio)
+        ).toFixed(2)
+    }));
+
+    const hojaVentas =
+        XLSX.utils.json_to_sheet(detalleVentas);
+
+    XLSX.utils.book_append_sheet(
+        libro,
+        hojaVentas,
+        "Ventas"
+    );
+
+    // movimientos de inventario
+    if (movimientos.length) {
+
+        const detalleMovimientos =
+            movimientos.map(m => ({
+                Fecha: m.fecha,
+                Hora: m.hora || "",
+                Tipo: m.tipo,
+                Producto: m.producto,
+                Cantidad: m.cantidad,
+                Descripcion:
+                    m.descripcion || ""
+            }));
+
+        const hojaMovimientos =
+            XLSX.utils.json_to_sheet(
+                detalleMovimientos
+            );
+
+        XLSX.utils.book_append_sheet(
+            libro,
+            hojaMovimientos,
+            "Movimientos"
+        );
+    }
+
+    XLSX.writeFile(
+        libro,
+        `Reporte_Ventas_${new Date()
+            .toISOString()
+            .slice(0, 10)}.xlsx`
+    );
+}

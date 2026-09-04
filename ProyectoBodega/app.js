@@ -200,3 +200,19 @@ document.addEventListener("DOMContentLoaded", () => {
     if (location.pathname.includes("menu.html"))
         requireSession();
 });
+function reiniciarSistema() {
+
+    if (
+        !confirm(
+            "Se eliminarán todos los datos del sistema. ¿Desea continuar?"
+        )
+    ) {
+        return;
+    }
+
+    localStorage.clear();
+
+    alert("Sistema reiniciado correctamente.");
+
+    location.reload();
+}
