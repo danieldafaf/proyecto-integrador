@@ -83,11 +83,17 @@ function registrarMovimiento(tipo, producto, cantidad, detalle = "") {
 
     // Obtiene los movimientos existentes
     const movimientos = DB.get("movimientos", []);
+    const ahora = new Date();
 
     // Agrega el nuevo movimiento al inicio de la lista
     movimientos.unshift({
         id: uid(),
-        fecha: new Date().toISOString(),
+        fecha: ahora.toLocaleDateString("es-EC"),
+        hora: ahora.toLocaleTimeString("es-EC", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+        }),
         tipo,
         producto,
         cantidad: Number(cantidad),

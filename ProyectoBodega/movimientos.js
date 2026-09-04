@@ -14,31 +14,6 @@ function initMovimientos() {
   // Muestra los movimientos
   renderMovimientos();
 }
-
-function registrarMovimiento(tipo, producto, cantidad, detalle) {
-  // Crea un nuevo movimiento
-
-  const ahora = new Date();
-  movimientos.push({
-    fecha: ahora.toISOString().slice(""es-EC""),
-
-    hora: ahora.toLocaleTimeString("es-EC",{
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    }),
-
-    tipo,
-    producto,
-    cantidad,
-    detalle,
-    usuario: getCurrentUser() || "Sistema",
-  });
-
-  // Guarda el movimiento en la base de datos
-  DB.set("movimientos", movimientos);
-}
-
 // Renderiza la tabla de movimientos
 function renderMovimientos() {
 
@@ -79,8 +54,9 @@ function renderMovimientos() {
           : "out";     // Rojo para eliminación u otros
 
       return `<tr>
-        <td>${esc(fechaTexto || "")}
-        <small>${esc(m.hora || "")}</small>
+        <td>
+            ${esc(fechaTexto || "")}
+            <small>${esc(m.hora || "")}</small>
         </td>
 
         <td>
