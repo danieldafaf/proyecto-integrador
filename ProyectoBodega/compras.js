@@ -3,6 +3,7 @@ const EMAILJS_PUBLIC_KEY = "ln4lawwy60ag-vtOI";
 const EMAILJS_SERVICE_ID = "service_3o917fr";
 const EMAILJS_TEMPLATE_ID = "template_7hydai8";
 
+
 let compras = [];
 
 // Inicialización del módulo de compras

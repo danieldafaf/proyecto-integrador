@@ -16,6 +16,11 @@ function initClients() {
     // Evento para guardar clientes al enviar el formulario
     clientForm.addEventListener("submit", saveClient);
 
+    //Solo permite números en el campo de telefono 
+    telefono.addEventListener("input", () => {
+        telefono.value = telefono.value.replace(/\D/g, "");
+    });
+
     // Muestra la lista inicial de clientes
     renderClients();
 }
@@ -66,13 +71,13 @@ function saveClient(evento) {
 
     // Valida que la cédula tenga 10 dígitos
     if (!validCedula(cedula.value)) {
-        alert("La cédula debe contener 10 números.");
+        alert("La cédula debe contener 10 números y no debe llevar caracteres especiales o letras.");
         return;
     }
 
     // Valida el número telefónico
-    if (!/^\d{7,10}$/.test(telefono.value)) {
-        alert("Ingrese un teléfono válido.");
+    if (!/^09\d{8}$/.test(telefono.value)) {
+        alert("Ingrese un teléfono válido.Ejemplo 0912345678");
         return;
     }
 
