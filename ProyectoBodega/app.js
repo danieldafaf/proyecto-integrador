@@ -202,9 +202,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.getElementById("loginForm"))
         initLogin();
 
-    // Si estamos en el menú principal, verifica que exista una sesión
+     // Si estamos en el menú principal, verifica que exista una sesión
     if (location.pathname.includes("menu.html"))
         requireSession();
+    
 });
 function reiniciarSistema() {
 
